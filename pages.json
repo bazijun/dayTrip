@@ -1,15 +1,54 @@
 {
-	"easycom": { // 配置easycom组件模式, 不用组件注册直接使用
+	"easycom": {
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "oneDay",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/about/about",
+			"style": {
+				"navigationBarTitleText": "关于",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/routePage/routePage",
+			"style": {
+				"navigationBarTitleText": "路线",
+				"navigationBarBackgroundColor": "#FFFFFF"
 			}
 		}
 	],
+	"tabBar": {
+    "color": "#999FA5",
+		"selectedColor": "#1F82FF",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [{
+        "pagePath": "pages/index/index",
+        "iconPath": "static/icon/road.png",
+        "selectedIconPath": "static/icon/road-click.png",
+        "text": "路线"
+    },
+		{
+			"pagePath": "pages/index/index",
+			"iconPath": "static/icon/home.png",
+			"selectedIconPath": "static/icon/home.png",
+			"text": "启动"
+	},
+		{
+        "pagePath": "pages/about/about",
+        "iconPath": "static/icon/about.png",
+        "selectedIconPath": "static/icon/about-click.png",
+        "text": "关于"
+    }]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

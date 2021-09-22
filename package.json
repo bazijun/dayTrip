@@ -2,22 +2,33 @@
   "name": "dayTrip",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "author": "",
   "scripts": {
+    "lint": "vue-cli-service lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bazijun/dayTrip.git"
+  "main": "main.js",
+  "dependencies": {
+    "uview-ui": "^1.8.4"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "devDependencies": {
+    "@vue/cli-plugin-eslint": "^4.5.13",
+    "@vue/eslint-config-standard": "^5.1.2",
+    "eslint": "^6.7.2",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^6.2.2"
+  },
   "bugs": {
     "url": "https://github.com/bazijun/dayTrip/issues"
   },
   "homepage": "https://github.com/bazijun/dayTrip#readme",
-  "dependencies": {
-    "uview-ui": "^1.8.4"
+  "keywords": [],
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bazijun/dayTrip.git"
   }
 }

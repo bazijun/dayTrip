@@ -1,0 +1,24 @@
+// 公共样式
+$theme-color: #1F82FF;
+$theme-light-color: #DEECFF;
+$theme-anti-color: #999FA5;
+$theme-bg: #F8F8F8;
+/* 公用类 */
+.title-text{
+    font-size: 36rpx;
+    font-weight: 800;
+    letter-spacing : 2rpx;
+    color: #FFFFFF;
+  }
+.text-l-bold{
+    font-weight: bold;
+    color: #333333;
+    margin-right: 10rpx;
+}
+.text-line-one{
+    width: 100%;
+    display: -webkit-box; 
+    overflow: hidden;
+     -webkit-box-orient:vertical;
+    -webkit-line-clamp:1;
+}
