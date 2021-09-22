@@ -1,13 +1,13 @@
 <template>
   <view>
-    <view class="home-box">
+    <view class="home-box" @click="outSet">
       <image src="/static/img/home.png"/>
       <view class="title-text">点击选择出发地点</view>
     </view>
     <view class="target-box">
       <view class="target-head">
         <view class="title-text">目的地列表</view>
-        <u-icon name="plus-circle-fill" color="#fff" size="65"></u-icon>
+        <u-icon name="plus-circle-fill" color="#fff" size="75"></u-icon>
       </view>
       <view class="target-content">
         <view class="target-list">
@@ -24,12 +24,19 @@
 </template>
 
 <script>
+import api from '../../util/util'
 export default {
   data () {
     return {
       title: 'Hello',
       count: 5,
       value: 4,
+      home: {
+
+      },
+      list: {
+
+      },
       tabbar: [
         {
           iconPath: '/static/icon/road.png',
@@ -77,6 +84,15 @@ export default {
         return false
       }
       return true
+    },
+    outSet () {
+      const loaction = api.mpLocation()
+      if (loaction) return
+      uni.chooseLocation()
+        .then(res => {
+          this.home = res[1]
+          console.log(res[1])
+        }).catch(err => console.log(err))
     }
   }
 }
@@ -146,7 +162,7 @@ export default {
       .t-address{
         width: 520rpx;
         color: #666666;
-        font-size: 24rpx;
+        font-size: 26rpx;
         margin-top: 10rpx;
       }
     }
