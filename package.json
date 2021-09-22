@@ -1,0 +1,23 @@
+{
+  "name": "dayTrip",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bazijun/dayTrip.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bazijun/dayTrip/issues"
+  },
+  "homepage": "https://github.com/bazijun/dayTrip#readme",
+  "dependencies": {
+    "uview-ui": "^1.8.4"
+  }
+}

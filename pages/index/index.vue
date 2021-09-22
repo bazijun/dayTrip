@@ -4,6 +4,9 @@
 		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view>
+		<view>
+			<u-rate :count="count" v-model="value"></u-rate>
+		</view>
 	</view>
 </template>
 
@@ -11,11 +14,12 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello'
+				title: 'Hello',
+				count: 5,
+				value: 4
 			}
 		},
 		onLoad() {
-
 		},
 		methods: {
 
