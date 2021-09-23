@@ -1,4 +1,6 @@
-/* 小程序 */
+/* 腾讯地图sdk */
+import wx from './qqMapSDK/qqmap-wx-jssdk'
+console.log(wx)
 export default {
   mpLocation () { // 是否位置授权
     uni.getSetting({

@@ -3,7 +3,46 @@ $theme-color: #1F82FF;
 $theme-light-color: #DEECFF;
 $theme-anti-color: #999FA5;
 $theme-bg: #F8F8F8;
-/* 公用类 */
+/* 布局 */
+.flex {
+    display: flex;
+}
+.flex-aic{
+    display: flex;
+    align-items: center;
+}
+.flex-aic-jcc{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text-center{
+    text-align: center;
+}
+
+/* 微调 */
+.width-sm {
+    width: 470rpx;
+}
+.width-lg {
+    width: 520rpx;
+}
+.margin-top-lg{
+    margin-top: 15rpx
+}
+/* 字体 */
+.text-sm{
+    font-size: 25rpx;
+}
+.t-name{
+    font-size: 36rpx;
+    font-weight: bold;
+  }
+.t-address{
+    color: #666666;
+    font-size: 26rpx;
+    margin-top: 10rpx;
+}
 .title-text{
     font-size: 36rpx;
     font-weight: 800;
@@ -16,9 +55,27 @@ $theme-bg: #F8F8F8;
     margin-right: 10rpx;
 }
 .text-line-one{
-    width: 100%;
     display: -webkit-box; 
     overflow: hidden;
      -webkit-box-orient:vertical;
     -webkit-line-clamp:1;
 }
+.text-line-two{
+    display: -webkit-box; 
+    overflow: hidden;
+     -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+}
+/* icon 图片 */
+.icon-img{
+    width: 40rpx;
+    height: 40rpx;
+    margin-right: 10rpx;
+}
+.theme-img{
+    width: 170rpx;
+    height: 170rpx;
+    padding-top: 30rpx;
+    padding-bottom: 20rpx;
+}
+/* 组件 */
