@@ -3,9 +3,9 @@
     <view v-for="item in list" :key="item.path" class="option-list" @click="goRoute(item.path)">
       <view class="option-title">
         <u-icon :name="item.icon" :color="item.color" size="40"></u-icon>
-        <view class="text-lg text-margin-l-sm" style="line-height: 40rpx">{{item.title}}</view>
+        <view class="text-lg text-margin-l-sm" style="line-height: 45rpx">{{item.title}}</view>
       </view>
-      <u-icon name="arrow-right" color="#ADAAAA" size="40"></u-icon>
+      <u-icon name="arrow-right" color="#ADAAAA" size="45"></u-icon>
     </view>
     <u-tabbar :list="tabbar" active-color="#1F82FF"></u-tabbar>
   </view>
@@ -57,7 +57,7 @@ export default {
 <style lang="scss" scoped>
 .option-list {
   width: 710rpx;
-  height: 80rpx;
+  height: 100rpx;
   box-shadow: 0rpx 2rpx 8rpx 0rpx rgba(16, 105, 231, 0.2);
   border-radius: 12rpx;
   background: #fff;
