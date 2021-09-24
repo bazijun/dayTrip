@@ -45,6 +45,14 @@
         </view>
       </view>
     </view>
+    <u-modal v-model="show" show-cancel-button @confirm="saveRouteGo"
+    confirm-text="保存并启动" cancel-text="取消" title="路线保存">
+      <view class="input-box">
+        <u-input v-model="storeName"
+        focus height="70" :border="true" input-align="center"
+        placeholder="为该路线取个名字" border-color="#1F82FF" maxlength="15"/>
+      </view>
+    </u-modal>
     <u-tabbar :list="tabbar" :mid-button="true" active-color="#1F82FF" :before-switch="goRoute"></u-tabbar>
   </view>
 </template>
@@ -63,6 +71,9 @@ export default {
       value: 4,
       home: {},
       list: [],
+      show: false,
+      storeName: '',
+      storeId: '',
       tabbar: [
         {
           iconPath: '/static/icon/road.png',
@@ -78,10 +89,10 @@ export default {
           pagePath: '/pages/index/index'
         },
         {
-          iconPath: '/static/icon/about.png',
-          selectedIconPath: '/static/icon/about-click.png',
-          text: '关于',
-          pagePath: '/pages/about/about'
+          iconPath: '/static/icon/option.png',
+          selectedIconPath: '/static/icon/option-click.png',
+          text: '工具',
+          pagePath: '/pages/option/option'
         }
       ],
       options: [
@@ -100,7 +111,9 @@ export default {
       ]
     }
   },
-  onLoad () {},
+  onLoad (option) {
+    // 路线过来的 会自动渲染
+  },
   methods: {
     goRoute (index) {
       if (index === 1) {
@@ -112,22 +125,50 @@ export default {
           })
           return
         }
-        uni.showModal({
-          title: '提示',
-          content: '起点和目标列表确定好了吗？',
-          cancelText: '没有',
-          confirmText: '启动！',
-          success: res => {
-            if (res.confirm) {
-              uni.navigateTo({
-                url: `../routePage/routePage?list=${JSON.stringify(this.list)}&home=${JSON.stringify(this.home)}`
-              })
+        // 从路线收藏来的 就不用取名字了。
+        if (this.storeId) {
+          uni.showModal({
+            title: '提示',
+            content: '起点和目标列表确定好了吗？',
+            cancelText: '没有',
+            confirmText: '启动！',
+            success: res => {
+              if (res.confirm) {
+                uni.navigateTo({
+                  url: `../routePage/routePage?list=${JSON.stringify(this.list)}&home=${JSON.stringify(this.home)}`
+                })
+              }
             }
-          }
-        })
+          })
+        } else {
+          this.show = true
+        }
         return false
       }
       return true
+    },
+    saveRouteGo () {
+      // 名字不能相同
+      if (!this.storeName) {
+        this.show = true
+        uni.showToast({
+          title: '路线名不能为空！',
+          icon: 'none',
+          duration: 1500
+        })
+        return
+      }
+      const payload = {
+        id: new Date().getTime(),
+        name: this.storeName,
+        home: this.home,
+        target: this.list
+      }
+      this.$store.commit('ADD_ROUTE_STORE', payload)
+      console.log(this.$store.state.routeStore, '路线仓库')
+      uni.navigateTo({
+        url: `../routePage/routePage?list=${JSON.stringify(this.list)}&home=${JSON.stringify(this.home)}`
+      })
     },
     outSet () {
       const loaction = api.mpLocation()
@@ -237,6 +278,7 @@ export default {
         .catch((err) => console.log(err))
     },
     reloadTargetList () {
+      if (this.list.length === 0) return
       uni.showModal({
         title: '提示',
         content: '是否确定重置目标列表 ？',
@@ -326,5 +368,8 @@ export default {
     }
   }
 }
-
+.input-box{
+  width: 500rpx;
+  margin: 20rpx auto;
+}
 </style>

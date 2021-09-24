@@ -3,6 +3,9 @@ $theme-color: #1F82FF;
 $theme-light-color: #DEECFF;
 $theme-anti-color: #999FA5;
 $theme-bg: #F8F8F8;
+
+$theme-warning:#f0ad4e;
+$theme-success:#67C23A;
 /* 布局 */
 .flex {
     display: flex;
@@ -19,8 +22,13 @@ $theme-bg: #F8F8F8;
 .text-center{
     text-align: center;
 }
-
+.text-right{
+    text-align: right;
+}
 /* 微调 */
+.width-xs {
+    width: 400rpx;
+}
 .width-sm {
     width: 470rpx;
 }
@@ -30,9 +38,31 @@ $theme-bg: #F8F8F8;
 .margin-top-lg{
     margin-top: 15rpx
 }
+.text-margin-r{
+    margin-right: 10rpx;
+}
+.text-margin-l{
+    margin-left: 10rpx;
+}
+.text-margin-l-sm{
+    margin-left: 15rpx;
+}
 /* 字体 */
+.text-lg-b {
+    font-size: 32rpx;
+    font-weight: bold;
+}
+.text-lg {
+    font-size: 32rpx;
+}
 .text-sm{
     font-size: 25rpx;
+}
+.text-grey {
+    color: #666666
+}
+.text-theme{
+    color: $theme-color
 }
 .t-name{
     font-size: 36rpx;

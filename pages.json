@@ -11,9 +11,9 @@
 			}
 		},
 		{
-			"path": "pages/about/about",
+			"path": "pages/option/option",
 			"style": {
-				"navigationBarTitleText": "关于",
+				"navigationBarTitleText": "工具",
 				"navigationBarBackgroundColor": "#FFFFFF"
 			}
 		},
@@ -23,7 +23,22 @@
 				"navigationBarTitleText": "路线",
 				"navigationBarBackgroundColor": "#FFFFFF"
 			}
+		},
+		{
+			"path": "pages/collect/collect",
+			"style": {
+				"navigationBarTitleText": "路线仓库",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/about/about",
+			"style": {
+				"navigationBarTitleText": "关于",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
 		}
+
 	],
 	"tabBar": {
     "color": "#999FA5",
@@ -43,9 +58,9 @@
 			"text": "启动"
 	},
 		{
-        "pagePath": "pages/about/about",
-        "iconPath": "static/icon/about.png",
-        "selectedIconPath": "static/icon/about-click.png",
+        "pagePath": "pages/option/option",
+        "iconPath": "static/icon/option.png",
+        "selectedIconPath": "static/icon/option-click.png",
         "text": "关于"
     }]
 	},

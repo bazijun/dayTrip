@@ -1,6 +1,9 @@
 /* 腾讯地图sdk */
-import wx from './qqMapSDK/qqmap-wx-jssdk'
-console.log(wx)
+import QQMapWX from './qqMapSDK/qqmap-wx-jssdk'
+const qqMap = new QQMapWX({
+  key: 'AJBBZ-OKE6X-HCO4Q-ZLXNO-466NH-EXFCR'
+})
+console.log(qqMap)
 export default {
   mpLocation () { // 是否位置授权
     uni.getSetting({

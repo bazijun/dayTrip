@@ -1,6 +1,6 @@
 <template>
   <div>
-about
+      collect
   </div>
 </template>
 
