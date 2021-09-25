@@ -10,7 +10,8 @@ module.exports = {
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
-    uni: true
+    uni: true,
+    getCurrentPages: true
   },
   parserOptions: {
     ecmaVersion: 2020

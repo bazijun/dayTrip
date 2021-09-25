@@ -17,6 +17,11 @@
         </view>
       </view>
     </view>
+     <!-- 新建路线 -->
+    <u-button @click="newRoute" v-if="storeId" shape="circle" :custom-style="btnCustomStyle" type="info" :ripple="true">
+        <u-icon name="plus" color="#fff" size="55" style="padding-right:15rpx"></u-icon>
+        新建路线
+    </u-button>
     <view class="target-box">
       <view class="target-head">
         <view class="flex">
@@ -74,6 +79,14 @@ export default {
       show: false,
       storeName: '',
       storeId: '',
+      btnCustomStyle: {
+        width: '700rpx',
+        height: '80rpx',
+        backgroundColor: '#19BE6B',
+        color: '#fff',
+        margin: '10rpx auto 10rpx auto',
+        fontSize: '35rpx'
+      },
       tabbar: [
         {
           iconPath: '/static/icon/road.png',
@@ -111,10 +124,35 @@ export default {
       ]
     }
   },
-  onLoad (option) {
-    // 路线过来的 会自动渲染
+  computed: {
+    routeStore () {
+      return this.$store.state.routeStore
+    }
+  },
+  onLoad () {
+    this.getList()
   },
   methods: {
+    newRoute () {
+      uni.showModal({
+        title: '提示',
+        content: '是否重新打开空白路线页？',
+        success: (res) => {
+          if (res.confirm) {
+            this.list = []
+            this.home = {}
+            this.storeId = ''
+          } else if (res.cancel) {
+          }
+        }
+      })
+    },
+    getList () {
+      const { home, target, id } = this.$store.state.currentRoute
+      this.home = home
+      this.list = target
+      this.storeId = id
+    },
     goRoute (index) {
       if (index === 1) {
         if (!this.home.errMsg || (this.list.length === 0)) {
@@ -125,15 +163,21 @@ export default {
           })
           return
         }
-        // 从路线收藏来的 就不用取名字了。
+        // 从路线收藏来的 就不用取名字了。隐式更新数据
         if (this.storeId) {
           uni.showModal({
-            title: '提示',
-            content: '起点和目标列表确定好了吗？',
-            cancelText: '没有',
+            title: '提醒',
+            content: '路线收藏的数据，若有修改会自动保存',
+            cancelText: '取消',
             confirmText: '启动！',
             success: res => {
               if (res.confirm) {
+                const payload = {
+                  id: this.storeId,
+                  home: this.home,
+                  target: this.list
+                }
+                this.$store.commit('UPDATE_ROUTE_STORE', payload)
                 uni.navigateTo({
                   url: `../routePage/routePage?list=${JSON.stringify(this.list)}&home=${JSON.stringify(this.home)}`
                 })
@@ -148,7 +192,19 @@ export default {
       return true
     },
     saveRouteGo () {
-      // 名字不能相同
+      // 名字不能重复
+      console.log(this.routeStore)
+      const namePd = this.routeStore.some(v => v.name === this.storeName)
+      if (namePd) {
+        this.show = true
+        uni.showToast({
+          title: '路线名不得重复！',
+          icon: 'none',
+          duration: 1500
+        })
+        return
+      }
+      // 名字不为空
       if (!this.storeName) {
         this.show = true
         uni.showToast({
@@ -158,9 +214,11 @@ export default {
         })
         return
       }
+
       const payload = {
         id: new Date().getTime(),
         name: this.storeName,
+        show: false,
         home: this.home,
         target: this.list
       }
