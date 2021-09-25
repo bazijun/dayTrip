@@ -19,5 +19,17 @@ export default {
         }
       }
     })
+  },
+  myDirection (data) {
+    return new Promise((resolve, reject) => {
+      qqMap.direction({
+        sig: 'SE8PZQLXM9vjdVWdsp6TSZdfz4BhVvOI',
+        mode: data.mode,
+        from: data.from,
+        to: data.to,
+        success: res => resolve(res),
+        fail: err => reject(err)
+      })
+    })
   }
 }

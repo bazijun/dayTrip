@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import api from '../../util/util'
 import RoadLine from '../../components/RoadLine/RoadLine.vue'
 export default {
   data () {
@@ -21,10 +22,22 @@ export default {
   onLoad (option) {
     this.list = JSON.parse(option.list)
     this.home = JSON.parse(option.home)
+    this.getResolve()
     console.log(this.list)
     console.log(this.home)
   },
-  methods: {},
+  methods: {
+    getResolve () {
+      const data = {
+        mode: 'transit',
+        from: `${this.home.latitude},${this.home.longitude}`,
+        to: `${this.list[0].latitude},${this.list[0].longitude}`
+      }
+      api.myDirection(data).then(res => {
+        console.log(res)
+      }).catch(err => { console.log(err) })
+    }
+  },
   components: { RoadLine }
 }
 </script>
