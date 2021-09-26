@@ -25,6 +25,10 @@ $theme-success:#67C23A;
 .text-right{
     text-align: right;
 }
+.flex-se {
+    display: flex;
+    justify-content: space-evenly;
+}
 /* 微调 */
 .width-xs {
     width: 400rpx;

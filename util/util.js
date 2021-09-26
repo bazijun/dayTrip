@@ -1,9 +1,3 @@
-/* 腾讯地图sdk */
-import QQMapWX from './qqMapSDK/qqmap-wx-jssdk'
-const qqMap = new QQMapWX({
-  key: 'AJBBZ-OKE6X-HCO4Q-ZLXNO-466NH-EXFCR'
-})
-console.log(qqMap)
 export default {
   mpLocation () { // 是否位置授权
     uni.getSetting({
@@ -20,16 +14,18 @@ export default {
       }
     })
   },
-  myDirection (data) {
-    return new Promise((resolve, reject) => {
-      qqMap.direction({
-        sig: 'SE8PZQLXM9vjdVWdsp6TSZdfz4BhVvOI',
-        mode: data.mode,
-        from: data.from,
-        to: data.to,
-        success: res => resolve(res),
-        fail: err => reject(err)
-      })
-    })
+  /* 单位换算 */
+  toKm (m) {
+    if (m < 1000) return m + '米'
+    if (m % 1000 === 0) return (m / 1000) + '公里'
+    if ((m / 1000).toFixed(1).split('.')[1] === '0') return parseInt(m / 1000) + '公里'
+    return (m / 1000).toFixed(1) + '公里'
+  },
+  toTime (m) {
+    if (m < 60) return m + '分钟'
+    if (m > 60 * 24) return `${parseInt(m / (60 * 24))}天${parseInt(m % (60 * 24) / 60)}小时${m % 60}分钟`
+    if (m % 60 === 0) return `${parseInt(m / 60)}小时`
+    return `${parseInt(m / 60)}小时${m % 60}分钟`
   }
+
 }

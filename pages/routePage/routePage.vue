@@ -1,7 +1,12 @@
 <template>
   <view>
     <view class="console-box">
-      控制台
+      <view class="flex-se">
+        <u-button type="primary" @click="getResolve('driving')">驾车</u-button>
+        <u-button type="primary" @click="getResolve('walking')">步行</u-button>
+        <u-button type="primary" @click="getResolve('bicycling')">骑行</u-button>
+        <u-button type="primary" @click="getResolve('transit')">公交</u-button>
+      </view>
     </view>
     <view class="time-line-box">
       <RoadLine></RoadLine>
@@ -10,7 +15,8 @@
 </template>
 
 <script>
-import api from '../../util/util'
+// import api from '../../util/util'
+import { RoutePlan } from '../../util/routePlan'
 import RoadLine from '../../components/RoadLine/RoadLine.vue'
 export default {
   data () {
@@ -19,26 +25,41 @@ export default {
       list: []
     }
   },
-  onLoad (option) {
-    this.list = JSON.parse(option.list)
-    this.home = JSON.parse(option.home)
+  onLoad () {
+    // this.list = JSON.parse(option.list)
+    // this.home = JSON.parse(option.home)
+    const test = uni.getStorageSync('store')
+    this.list = test[0].target
+    this.home = test[0].home
     this.getResolve()
     console.log(this.list)
     console.log(this.home)
   },
   methods: {
-    getResolve () {
-      const data = {
-        mode: 'transit',
-        from: `${this.home.latitude},${this.home.longitude}`,
-        to: `${this.list[0].latitude},${this.list[0].longitude}`
+    getResolve (mode = 'driving') {
+      const routeLineData = {
+        home: this.home,
+        target: this.list,
+        mode: mode
       }
-      api.myDirection(data).then(res => {
-        console.log(res)
-      }).catch(err => { console.log(err) })
-    }
-  },
-  components: { RoadLine }
+      const ker = new RoutePlan(routeLineData)
+      console.log(ker)
+    //   const data = {
+    //     mode: mode,
+    //     from: `${this.home.latitude},${this.home.longitude}`,
+    //     to: `${this.list[0].latitude},${this.list[0].longitude}`
+    //   }
+    //   RP.myDirection(data)
+    //     .then((res) => {
+    //       console.log(res)
+    //     })
+    //     .catch((err) => {
+    //       console.log(err)
+    //     })
+    // }
+    },
+    components: { RoadLine }
+  }
 }
 </script>
 
@@ -47,7 +68,7 @@ export default {
   width: 700rpx;
   height: 150 rpx;
   margin: 20rpx auto;
-  border: 1px solid;
+  // border: 1px solid;
 }
 .time-line-box {
   width: 680rpx;
