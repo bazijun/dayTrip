@@ -37,60 +37,6 @@
             <image src="../../static/img/down/down-6.png" mode="widthFix"/>
         </view>
     </block>
-    <block>
-        <view class="roadline-list">
-        <!-- 定位时的当前位置 -->
-        <view v-if="true" class="current-loaction">
-          <view class="current-btn">当前位置</view>
-        </view>
-        <u-badge :offset="[-8,-8]" type="success" count="1"></u-badge>
-        <view>
-          <view class="t-name width-lg text-line-one"><text class="text-theme text-margin-r">目标一:</text></view>
-          <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>东街大路东山商下无级</view>
-        </view>
-        <u-icon name="map-fill" color="#1F82FF" size="65"></u-icon>
-      </view>
-      <!-- 下个目标 指引图标 -->
-        <view class="down-img">
-            <image src="../../static/img/down/down-6.png" mode="widthFix"/>
-        </view>
-    </block>
-    <block>
-        <view class="roadline-list">
-        <!-- 定位时的当前位置 -->
-        <view v-if="false" class="current-loaction">
-          <view class="current-btn">当前位置</view>
-        </view>
-        <u-badge :offset="[-8,-8]" type="success" count="1"></u-badge>
-        <view>
-          <view class="t-name width-lg text-line-one"><text class="text-theme text-margin-r">目标一:</text></view>
-          <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>东街大路东山商下无级</view>
-        </view>
-        <u-icon name="map-fill" color="#1F82FF" size="65"></u-icon>
-      </view>
-      <!-- 下个目标 指引图标 -->
-        <view class="down-img">
-            <image src="../../static/img/down/down-6.png" mode="widthFix"/>
-        </view>
-    </block>
-    <block>
-        <view class="roadline-list">
-        <!-- 定位时的当前位置 -->
-        <view v-if="false" class="current-loaction">
-          <view class="current-btn">当前位置</view>
-        </view>
-        <u-badge :offset="[-8,-8]" type="success" count="1"></u-badge>
-        <view>
-          <view class="t-name width-lg text-line-one"><text class="text-theme text-margin-r">目标一:</text></view>
-          <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>东街大路东山商下无级</view>
-        </view>
-        <u-icon name="map-fill" color="#1F82FF" size="65"></u-icon>
-      </view>
-      <!-- 下个目标 指引图标 -->
-        <view class="down-img">
-            <image src="../../static/img/down/down-6.png" mode="widthFix"/>
-        </view>
-    </block>
     <!-- 返家 -->
     <u-button shape="circle" :custom-style="btnCustomStyle" type="info" :ripple="true" @click="goBack">
         回

@@ -36,32 +36,53 @@ export class RoutePlan {
     this.home = routeLineData.home
     this.target = routeLineData.target
     this.mode = routeLineData.mode
-    this.getFirstStation()
+    // this.getFirstStation()
   }
 
-  getFirstStation () {
+  async getFirstStation () {
     let routeLine = []
-    this.target.forEach(v => {
+    for (const v of this.target) {
       const path = {
         mode: this.mode,
         from: `${this.home.latitude},${this.home.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
-      routeLine = [...routeLine, this.diffDistance(path)]
-    })
-    const firstLine = routeLine.sort((a, b) => a - b)
+      const route = await this.diffDistance(path)
+      console.log(route, 'route')
+      routeLine = [...routeLine, { ...v, route: route }]
+    }
+    const firstLine = routeLine.sort((a, b) => a.route - b.route)
     console.log(firstLine, '相聚时间排序')
   }
 
-  diffDistance (path, diff = 'duration') { // 两个位置的距离, 默认使用时间比较， distance 为距离
-    qqMap.direction({
-      sig: 'SE8PZQLXM9vjdVWdsp6TSZdfz4BhVvOI',
-      mode: path.mode,
-      from: path.from,
-      to: path.to,
-      success: res => {
-        return res.result.routes[0][diff]
+  async simpleMode () { // 简单模式 => 只是单纯比较 起点和各目标点的耗时，然后排序
+    let routeLine = []
+    for (const v of this.target) {
+      const path = {
+        mode: this.mode,
+        from: `${this.home.latitude},${this.home.longitude}`,
+        to: `${v.latitude},${v.longitude}`
       }
+      const route = await this.diffDistance(path)
+      console.log(route, 'route')
+      routeLine = [...routeLine, { ...v, route: route }]
+    }
+    const simpleLine = routeLine.sort((a, b) => a.route - b.route)
+    return simpleLine
+  }
+
+  diffDistance (path, diff = 'duration') { // 两个位置的距离, 默认使用时间比较， distance 为距离
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        qqMap.direction({
+          sig: 'SE8PZQLXM9vjdVWdsp6TSZdfz4BhVvOI',
+          mode: path.mode,
+          from: path.from,
+          to: path.to,
+          success: res => resolve(res.result.routes[0][diff]),
+          fail: err => reject(err)
+        })
+      }, 200)
     })
   }
 }

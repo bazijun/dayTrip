@@ -9,7 +9,7 @@
       </view>
     </view>
     <view class="time-line-box">
-      <RoadLine></RoadLine>
+      <road-line></road-line>
     </view>
   </view>
 </template>
@@ -22,32 +22,36 @@ export default {
   data () {
     return {
       home: {},
-      list: []
+      target: []
     }
   },
   onLoad () {
-    // this.list = JSON.parse(option.list)
+    // this.target = JSON.parse(option.target)
     // this.home = JSON.parse(option.home)
     const test = uni.getStorageSync('store')
-    this.list = test[0].target
+    this.target = test[0].target
     this.home = test[0].home
     this.getResolve()
-    console.log(this.list)
-    console.log(this.home)
   },
   methods: {
     getResolve (mode = 'driving') {
       const routeLineData = {
         home: this.home,
-        target: this.list,
+        target: this.target,
         mode: mode
       }
-      const ker = new RoutePlan(routeLineData)
-      console.log(ker)
+      // const path = {
+      //   mode: mode,
+      //   from: `${this.home.latitude},${this.home.longitude}`,
+      //   to: `${this.target[0].latitude},${this.target[0].longitude}`
+      // }
+      const RLD = new RoutePlan(routeLineData)
+      this.target = RLD.simpleMode()
+      console.log(RLD)
     //   const data = {
     //     mode: mode,
     //     from: `${this.home.latitude},${this.home.longitude}`,
-    //     to: `${this.list[0].latitude},${this.list[0].longitude}`
+    //     to: `${this.target[0].latitude},${this.target[0].longitude}`
     //   }
     //   RP.myDirection(data)
     //     .then((res) => {
@@ -57,9 +61,9 @@ export default {
     //       console.log(err)
     //     })
     // }
-    },
-    components: { RoadLine }
-  }
+    }
+  },
+  components: { RoadLine }
 }
 </script>
 
@@ -73,31 +77,5 @@ export default {
 .time-line-box {
   width: 680rpx;
   margin: auto;
-}
-.u-node {
-  width: 44rpx;
-  height: 44rpx;
-  border-radius: 100rpx;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #d0d0d0;
-}
-
-.u-order-title {
-  color: #333333;
-  font-weight: bold;
-  font-size: 32rpx;
-}
-
-.u-order-desc {
-  color: rgb(150, 150, 150);
-  font-size: 28rpx;
-  margin-bottom: 6rpx;
-}
-
-.u-order-time {
-  color: rgb(200, 200, 200);
-  font-size: 26rpx;
 }
 </style>
