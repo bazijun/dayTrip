@@ -3,15 +3,18 @@
     <!-- 家 -->
     <view class="home-box">
       <view class="home-on-box">
-        <image class="theme-img" src="/static/img/home-f.png" />
+        <image  v-if="mode === 'transit'" class="theme-img" src="/static/img/bus.png" mode="widthFix" />
+        <image v-else-if="mode === 'driving'" class="theme-img" src="/static/img/bike.png" mode="widthFix" />
+        <image v-else-if="mode === 'walking'" class="theme-img" src="/static/img/walk.png" mode="widthFix"/>
+        <image v-else-if="mode === 'bicycling'" class="theme-img" src="/static/img/car.png" mode="widthFix"/>
         <view class="width-xs text-center">
           <view class="flex-aic-jcc margin-top-lg">
             <image class="icon-img" src="/static/img/world.png" />
             <view class="text-sm">起 点</view>
             <view v-if="true" class="warning-btn">当前位置</view>
           </view>
-          <view class="t-name text-line-one">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</view>
-          <view class="t-address text-line-two"><text class="text-l-bold">详细地址:</text>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</view>
+          <view class="t-name text-line-one">{{home.name}}</view>
+          <view class="t-address text-line-two"><text class="text-l-bold">详细地址:</text>{{home.address}}</view>
         </view>
       </view>
     </view>
@@ -19,24 +22,24 @@
         <image src="../../static/img/down/down-6.png" mode="widthFix"/>
     </view>
     <!-- 目标列表 -->
-    <block>
+    <view v-for="(item, index) in target" :key="item.id">
         <view class="roadline-list">
         <!-- 定位时的当前位置 -->
         <view v-if="false" class="current-loaction">
           <view class="current-btn">当前位置</view>
         </view>
-        <u-badge :offset="[-8,-8]" type="success" count="1"></u-badge>
+        <u-badge :offset="[-8,-8]" type="success" :count="index + 1"></u-badge>
         <view>
-          <view class="t-name width-lg text-line-one"><text class="text-theme text-margin-r">目标一:</text>  xxxx</view>
-          <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>东街大路东山商下无级</view>
+          <view class="t-name width-lg text-line-one"><text class="text-theme text-margin-r">{{(target.length - 1) === index ? '终点站：' : T[index]}}</text>{{item.name}}</view>
+          <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>{{item.address}}</view>
         </view>
-        <u-icon name="map-fill" color="#1F82FF" size="65"></u-icon>
+        <u-icon name="map-fill" color="#1F82FF" size="65" @click="getLocation(item)"></u-icon>
       </view>
       <!-- 下个目标 指引图标 -->
         <view class="down-img">
             <image src="../../static/img/down/down-6.png" mode="widthFix"/>
         </view>
-    </block>
+    </view>
     <!-- 返家 -->
     <u-button shape="circle" :custom-style="btnCustomStyle" type="info" :ripple="true" @click="goBack">
         回
@@ -49,14 +52,22 @@
 <script>
 export default {
   props: {
-    list: {
+    home: {
+      type: Object,
+      default: () => {}
+    },
+    target: {
       type: Array,
       default: () => []
+    },
+    mode: {
+      type: String,
+      default: ''
     }
   },
   data () {
     return {
-      target: {
+      T: {
         0: '目标一：',
         1: '目标二：',
         2: '目标三：',
@@ -81,6 +92,9 @@ export default {
   methods: {
     goBack () {
       console.log('回家')
+    },
+    getLocation (location) {
+      console.log(location)
     }
   }
 }

@@ -47,7 +47,7 @@ export class RoutePlan {
         from: `${this.home.latitude},${this.home.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
-      const route = await this.diffDistance(path)
+      const route = await this.diffDistance(path).catch((err) => { console.log(err) })
       console.log(route, 'route')
       routeLine = [...routeLine, { ...v, route: route }]
     }
@@ -63,7 +63,7 @@ export class RoutePlan {
         from: `${this.home.latitude},${this.home.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
-      const route = await this.diffDistance(path)
+      const route = await this.diffDistance(path).catch((err) => { console.log(err) })
       console.log(route, 'route')
       routeLine = [...routeLine, { ...v, route: route }]
     }

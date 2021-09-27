@@ -2,14 +2,15 @@
   <view>
     <view class="console-box">
       <view class="flex-se">
-        <u-button type="primary" @click="getResolve('driving')">驾车</u-button>
-        <u-button type="primary" @click="getResolve('walking')">步行</u-button>
-        <u-button type="primary" @click="getResolve('bicycling')">骑行</u-button>
-        <u-button type="primary" @click="getResolve('transit')">公交</u-button>
+        <u-button :type="mode === 'transit' ? 'warning' : 'primary'" @click="setOrderly('transit')">公交地铁</u-button>
+        <u-button :type="mode === 'bicycling' ? 'warning' : 'primary'" @click="setOrderly('bicycling')">骑行</u-button>
+        <u-button :type="mode === 'walking' ? 'warning' : 'primary'" @click="setOrderly('walking')">步行</u-button>
+        <u-button :type="mode === 'driving' ? 'warning' : 'primary'" @click="setOrderly('driving')">驾车</u-button>
       </view>
+      <view></view>
     </view>
     <view class="time-line-box">
-      <road-line></road-line>
+      <road-line :mode="mode" :home="home" :target="target"></road-line>
     </view>
   </view>
 </template>
@@ -22,7 +23,8 @@ export default {
   data () {
     return {
       home: {},
-      target: []
+      target: [],
+      mode: 'transit'
     }
   },
   onLoad () {
@@ -31,36 +33,28 @@ export default {
     const test = uni.getStorageSync('store')
     this.target = test[0].target
     this.home = test[0].home
-    this.getResolve()
+    this.setOrderly(this.mode)
   },
   methods: {
-    getResolve (mode = 'driving') {
-      const routeLineData = {
-        home: this.home,
-        target: this.target,
-        mode: mode
-      }
+    async setOrderly (mode) {
+      this.mode = mode
       // const path = {
       //   mode: mode,
       //   from: `${this.home.latitude},${this.home.longitude}`,
       //   to: `${this.target[0].latitude},${this.target[0].longitude}`
       // }
+      const routeLineData = {
+        home: this.home,
+        target: this.target,
+        mode: mode
+      }
+      uni.showLoading({
+        title: '玩命计算中...',
+        mask: true
+      })
       const RLD = new RoutePlan(routeLineData)
-      this.target = RLD.simpleMode()
-      console.log(RLD)
-    //   const data = {
-    //     mode: mode,
-    //     from: `${this.home.latitude},${this.home.longitude}`,
-    //     to: `${this.target[0].latitude},${this.target[0].longitude}`
-    //   }
-    //   RP.myDirection(data)
-    //     .then((res) => {
-    //       console.log(res)
-    //     })
-    //     .catch((err) => {
-    //       console.log(err)
-    //     })
-    // }
+      this.target = await RLD.simpleMode().catch((err) => { console.log(err) })
+      uni.hideLoading()
     }
   },
   components: { RoadLine }
