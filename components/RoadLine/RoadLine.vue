@@ -4,9 +4,9 @@
     <view class="home-box">
       <view class="home-on-box">
         <image  v-if="mode === 'transit'" class="theme-img" src="/static/img/bus.png" mode="widthFix" />
-        <image v-else-if="mode === 'driving'" class="theme-img" src="/static/img/bike.png" mode="widthFix" />
+        <image v-else-if="mode === 'driving'" class="theme-img" src="/static/img/car.png" mode="widthFix" />
         <image v-else-if="mode === 'walking'" class="theme-img" src="/static/img/walk.png" mode="widthFix"/>
-        <image v-else-if="mode === 'bicycling'" class="theme-img" src="/static/img/car.png" mode="widthFix"/>
+        <image v-else-if="mode === 'bicycling'" class="theme-img" src="/static/img/bike.png" mode="widthFix"/>
         <view class="width-xs text-center">
           <view class="flex-aic-jcc margin-top-lg">
             <image class="icon-img" src="/static/img/world.png" />
@@ -35,10 +35,16 @@
         </view>
         <u-icon name="map-fill" color="#1F82FF" size="65" @click="getLocation(item)"></u-icon>
       </view>
-      <!-- 下个目标 指引图标 -->
+      <!-- 下个目标 指引图标 和 数据板 -->
+      <view class="flex-aic-jcc">
         <view class="down-img">
             <image src="../../static/img/down/down-6.png" mode="widthFix"/>
         </view>
+        <!-- 数据板子 -->
+        <!-- <view class="data-panel">
+
+        </view> -->
+      </view>
     </view>
     <!-- 返家 -->
     <u-button shape="circle" :custom-style="btnCustomStyle" type="info" :ripple="true" @click="goBack">
@@ -91,10 +97,32 @@ export default {
   },
   methods: {
     goBack () {
-      console.log('回家')
+      uni.openLocation({
+        latitude: this.home.latitude,
+        longitude: this.home.longitude,
+        name: this.home.name,
+        address: this.home.address,
+        success: function () {
+          console.log('success')
+        },
+        fail: function (err) {
+          console.log(err)
+        }
+      })
     },
     getLocation (location) {
-      console.log(location)
+      uni.openLocation({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        name: location.name,
+        address: location.address,
+        success: function () {
+          console.log('success')
+        },
+        fail: function (err) {
+          console.log(err)
+        }
+      })
     }
   }
 }
@@ -164,6 +192,11 @@ export default {
         border-radius: 10rpx;
       }
     }
+  }
+  .data-panel {
+    width: 400rpx;
+    height: 200rpx;
+    border: 1px solid;
   }
 }
 .down-img{

@@ -148,12 +148,17 @@ export default {
       })
     },
     getList () {
+      // 初次进入 app，currentRoute 数据是undefined, 赋值给 home 和 list，后面的条件会失效。
       const { home, target, id } = this.$store.state.currentRoute
-      this.home = home
-      this.list = target
-      this.storeId = id
+      console.log(this.$store.state.currentRoute)
+      if (id) {
+        this.home = home
+        this.list = target
+        this.storeId = id
+      }
     },
     goRoute (index) {
+      // const idPd = this.routeStore.some(v => v.name === this.storeName)
       if (index === 1) {
         if (!this.home.errMsg || (this.list.length === 0)) {
           uni.showToast({
@@ -171,6 +176,7 @@ export default {
             cancelText: '取消',
             confirmText: '启动！',
             success: res => {
+              console.log(this.home, 'home')
               if (res.confirm) {
                 const payload = {
                   id: this.storeId,
@@ -178,8 +184,10 @@ export default {
                   target: this.list
                 }
                 this.$store.commit('UPDATE_ROUTE_STORE', payload)
+                const list = JSON.stringify(payload)
+                // 数据太长 需要进行 encodeURIComponent 编码
                 uni.navigateTo({
-                  url: `../routePage/routePage?list=${JSON.stringify(this.list)}&home=${JSON.stringify(this.home)}`
+                  url: `../routePage/routePage?list=${encodeURIComponent(list)}`
                 })
               }
             }
@@ -223,10 +231,12 @@ export default {
         target: this.list
       }
       this.$store.commit('ADD_ROUTE_STORE', payload)
-      console.log(this.$store.state.routeStore, '路线仓库')
+      const list = JSON.stringify(payload)
+      // 数据太长 需要进行 encodeURIComponent 编码
       uni.navigateTo({
-        url: `../routePage/routePage?list=${JSON.stringify(this.list)}&home=${JSON.stringify(this.home)}`
+        url: `../routePage/routePage?list=${encodeURIComponent(list)}`
       })
+      this.storeId = this.routeStore[0].id // 保存过一次 就不用保存了。
     },
     outSet () {
       const loaction = api.mpLocation()
@@ -235,7 +245,6 @@ export default {
         uni
           .chooseLocation()
           .then((res) => {
-            this.closeSwipe()
             if (!res[1].errMsg) return
             this.home = res[1]
           })

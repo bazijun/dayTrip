@@ -27,12 +27,15 @@ export default {
       mode: 'transit'
     }
   },
-  onLoad () {
-    // this.target = JSON.parse(option.target)
-    // this.home = JSON.parse(option.home)
-    const test = uni.getStorageSync('store')
-    this.target = test[0].target
-    this.home = test[0].home
+  onLoad (option) {
+    console.log(option)
+    console.log(JSON.parse(decodeURIComponent(option.list)))
+    const { home, target } = JSON.parse(decodeURIComponent(option.list))
+    this.home = home
+    this.target = target
+    // const test = uni.getStorageSync('store')
+    // this.target = test[0].target
+    // this.home = test[0].home
     this.setOrderly(this.mode)
   },
   methods: {
@@ -52,9 +55,11 @@ export default {
         title: '玩命计算中...',
         mask: true
       })
+      console.time()
       const RLD = new RoutePlan(routeLineData)
       this.target = await RLD.simpleMode().catch((err) => { console.log(err) })
       uni.hideLoading()
+      console.timeEnd()
     }
   },
   components: { RoadLine }

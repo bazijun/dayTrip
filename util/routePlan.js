@@ -51,8 +51,8 @@ export class RoutePlan {
       console.log(route, 'route')
       routeLine = [...routeLine, { ...v, route: route }]
     }
-    const firstLine = routeLine.sort((a, b) => a.route - b.route)
-    console.log(firstLine, '相聚时间排序')
+    return routeLine.sort((a, b) => a.route - b.route)[0]
+    // console.log(firstLine, '相聚时间排序')
   }
 
   async simpleMode () { // 简单模式 => 只是单纯比较 起点和各目标点的耗时，然后排序
@@ -71,7 +71,7 @@ export class RoutePlan {
     return simpleLine
   }
 
-  diffDistance (path, diff = 'duration') { // 两个位置的距离, 默认使用时间比较， distance 为距离
+  diffDistance (path, diff = 'distance') { // 两个位置的距离, 默认使用时间比较， distance 为距离
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         qqMap.direction({
@@ -82,7 +82,7 @@ export class RoutePlan {
           success: res => resolve(res.result.routes[0][diff]),
           fail: err => reject(err)
         })
-      }, 200)
+      }, 201)
     })
   }
 }
