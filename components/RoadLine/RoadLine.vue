@@ -10,8 +10,8 @@
         <view class="width-xs text-center">
           <view class="flex-aic-jcc margin-top-lg">
             <image class="icon-img" src="/static/img/world.png" />
-            <view class="text-sm">起 点</view>
-            <view v-if="true" class="warning-btn">当前位置</view>
+            <view class="text-theme t-name">起 点</view>
+            <!-- <view v-if="true" class="warning-btn">当前位置</view> -->
           </view>
           <view class="t-name text-line-one">{{home.name}}</view>
           <view class="t-address text-line-two"><text class="text-l-bold">详细地址:</text>{{home.address}}</view>

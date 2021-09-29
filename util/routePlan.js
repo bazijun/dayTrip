@@ -5,13 +5,9 @@ const qqMap = new QQMapWX({
 })
 /* 需求分析 */
 /*****
-问题1：Home 与 targetList 距离的规划
-H => target1 (距离,时间) A
-H => target2 (距离,时间) B
-H => target3 (距离,时间) C
-...
-再冒泡排序 A B C
-区别不在于home 和 targetList的距离，而在于 target 与 target的距离
+
+  已隐藏
+
 */
 export default {
 
@@ -36,27 +32,44 @@ export class RoutePlan {
     this.home = routeLineData.home
     this.target = routeLineData.target
     this.mode = routeLineData.mode
-    // this.getFirstStation()
+    this.type = routeLineData.type // distance or duration
+    this.targetSequence = [] // 优化后的目标序列
+    this.index = 1
   }
 
-  async getFirstStation () {
+  async standardMode (start, targets) { // 标准模式 <迪杰斯特拉算法(Dijkstra)> => 递归遍历 运算时间为 简单模式的targets.length倍
+    console.log(`\n================ ${this.index}   ${this.mode}  《==》  ${this.type}   ================`)
     let routeLine = []
-    for (const v of this.target) {
+    this.index++
+    for (const v of targets) {
       const path = {
         mode: this.mode,
-        from: `${this.home.latitude},${this.home.longitude}`,
+        from: `${start.latitude},${start.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
       const route = await this.diffDistance(path).catch((err) => { console.log(err) })
-      console.log(route, 'route')
       routeLine = [...routeLine, { ...v, route: route }]
+      console.log(`${route} ===> ${this.type === 'distance' ? '距离' : '耗时'} ===> ${v.name}`)
     }
-    return routeLine.sort((a, b) => a.route - b.route)[0]
-    // console.log(firstLine, '相聚时间排序')
+    const sortTarget = routeLine.sort((a, b) => a.route - b.route) // 排序后的 target 数组
+    const mark = sortTarget[0] // 标记点 (以排序成功的第一位目标点)
+    const noMark = sortTarget.slice(1) // 未标记点(名次不为一的余下目标点)
+    console.table(sortTarget)
+    this.targetSequence = [...this.targetSequence, mark]
+    if (this.targetSequence.length !== this.target.length) {
+      await this.standardMode(mark, noMark)
+    } else {
+      const targetSequence = this.targetSequence
+      this.targetSequence = []
+      this.index = 1
+      console.log('=====结束=====')
+      return targetSequence
+    }
   }
 
-  async simpleMode () { // 简单模式 => 只是单纯比较 起点和各目标点的耗时，然后排序
+  async simpleMode () { // 简单模式 => 只是单纯比较 起点和各目标点的耗时(距离)，然后排序
     let routeLine = []
+    console.log(`\n================   ${this.mode}  <==>  ${this.type}   ==============`)
     for (const v of this.target) {
       const path = {
         mode: this.mode,
@@ -64,14 +77,15 @@ export class RoutePlan {
         to: `${v.latitude},${v.longitude}`
       }
       const route = await this.diffDistance(path).catch((err) => { console.log(err) })
-      console.log(route, 'route')
       routeLine = [...routeLine, { ...v, route: route }]
+      console.log(`${route}===>${this.type === 'distance' ? '距离' : '耗时'}===>${v.name}`)
     }
     const simpleLine = routeLine.sort((a, b) => a.route - b.route)
+    console.table(simpleLine)
     return simpleLine
   }
 
-  diffDistance (path, diff = 'distance') { // 两个位置的距离, 默认使用时间比较， distance 为距离
+  diffDistance (path) { // 两个位置的距离。
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         qqMap.direction({
@@ -79,7 +93,7 @@ export class RoutePlan {
           mode: path.mode,
           from: path.from,
           to: path.to,
-          success: res => resolve(res.result.routes[0][diff]),
+          success: res => resolve(res.result.routes[0][this.type]),
           fail: err => reject(err)
         })
       }, 201)

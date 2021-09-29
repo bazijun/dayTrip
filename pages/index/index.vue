@@ -50,11 +50,11 @@
         </view>
       </view>
     </view>
-    <u-modal v-model="show" show-cancel-button @confirm="saveRouteGo"
+    <u-modal v-model="show" show-cancel-button @confirm="saveRouteGo" @cancel="isfocus = false"
     confirm-text="保存并启动" cancel-text="取消" title="路线保存">
       <view class="input-box">
         <u-input v-model="storeName"
-        focus height="70" :border="true" input-align="center"
+        :focus="isfocus" height="70" :border="true" input-align="center"
         placeholder="为该路线取个名字" border-color="#1F82FF" maxlength="15"/>
       </view>
     </u-modal>
@@ -79,6 +79,7 @@ export default {
       show: false,
       storeName: '',
       storeId: '',
+      isfocus: false,
       btnCustomStyle: {
         width: '700rpx',
         height: '80rpx',
@@ -194,6 +195,7 @@ export default {
           })
         } else {
           this.show = true
+          setTimeout(() => { this.isfocus = true }, 0)
         }
         return false
       }
