@@ -28,7 +28,6 @@ export default {
     }
   },
   onLoad (option) {
-    console.log(option)
     console.log(JSON.parse(decodeURIComponent(option.list)))
     const { home, target } = JSON.parse(decodeURIComponent(option.list))
     this.home = home

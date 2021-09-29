@@ -3,12 +3,19 @@ export const routeStore = [
     id: 1632488015398,
     name: '永恒与一日',
     show: false,
-    home: {
+    /* home: {
       errMsg: 'chooseLocation:ok',
       name: '合能珍宝琥珀2期',
       address: '四川省成都市温江区凤凰南大街174号',
       latitude: 30.672302,
       longitude: 103.888693
+    }, */
+    home: {
+      errMsg: 'chooseLocation:ok',
+      name: '天安门广场',
+      address: '北京市东城区东长安街',
+      latitude: 39.90374,
+      longitude: 116.397827
     },
     target: [
       {
