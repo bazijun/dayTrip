@@ -2,11 +2,21 @@
   <view>
     <view class="console-box">
       <view class="flex-se">
-        <u-button :type="mode === 'transit' ? 'warning' : 'primary'" @click="setOrderly('transit')">公交地铁</u-button>
-        <u-button :type="mode === 'bicycling' ? 'warning' : 'primary'" @click="setOrderly('bicycling')">骑行</u-button>
-        <u-button :type="mode === 'walking' ? 'warning' : 'primary'" @click="setOrderly('walking')">步行</u-button>
-        <u-button :type="mode === 'driving' ? 'warning' : 'primary'" @click="setOrderly('driving')">驾车</u-button>
+        <u-button :type="mode === 'transit' ? 'warning' : 'primary'" @click="setOrderly('transit', type)">公交地铁</u-button>
+        <u-button :type="mode === 'bicycling' ? 'warning' : 'primary'" @click="setOrderly('bicycling', type)">骑行</u-button>
+        <u-button :type="mode === 'walking' ? 'warning' : 'primary'" @click="setOrderly('walking', type)">步行</u-button>
+        <u-button :type="mode === 'driving' ? 'warning' : 'primary'" @click="setOrderly('driving', type)">驾车</u-button>
       </view>
+      <!-- test -->
+      <view class="margin-top-lg"></view>
+      <u-row gutter="20">
+        <u-col span="6">
+          <u-button type="default" @click="setOrderly(mode, 'distance')">距离</u-button>
+        </u-col>
+        <u-col span="6">
+          <u-button type="default" @click="setOrderly(mode, 'duration')">耗时</u-button>
+        </u-col>
+      </u-row>
       <view></view>
     </view>
     <view class="time-line-box">
@@ -24,41 +34,49 @@ export default {
     return {
       home: {},
       target: [],
-      mode: 'transit'
+      mode: 'driving',
+      type: 'distance', // distance or duration
+      RLD: null // RoutePlan类的实例
     }
   },
   onLoad (option) {
-    console.log(JSON.parse(decodeURIComponent(option.list)))
-    const { home, target } = JSON.parse(decodeURIComponent(option.list))
-    this.home = home
-    this.target = target
-    // const test = uni.getStorageSync('store')
-    // this.target = test[0].target
-    // this.home = test[0].home
-    this.setOrderly(this.mode)
+    // const { home, target } = JSON.parse(decodeURIComponent(option.list))
+    // this.home = home
+    // this.target = target
+    const test = uni.getStorageSync('store')
+    this.target = test[0].target
+    this.home = test[0].home
+    const routeLineData = {
+      home: this.home,
+      target: this.target,
+      mode: this.mode,
+      type: this.type
+    }
+    this.RLD = new RoutePlan(routeLineData)
+    this.setOrderly(this.mode, this.type)
+  },
+  onUnload () {
+    console.log('instance destroy')
+    // 实例销毁
+    this.RLD = null
   },
   methods: {
-    async setOrderly (mode) {
+    async setOrderly (mode, type) {
       this.mode = mode
-      // const path = {
-      //   mode: mode,
-      //   from: `${this.home.latitude},${this.home.longitude}`,
-      //   to: `${this.target[0].latitude},${this.target[0].longitude}`
-      // }
-      const routeLineData = {
-        home: this.home,
-        target: this.target,
-        mode: mode
-      }
+      this.type = type
       uni.showLoading({
-        title: '玩命计算中...',
+        title: '会有点久，莫急',
         mask: true
       })
-      console.time()
-      const RLD = new RoutePlan(routeLineData)
-      this.target = await RLD.simpleMode().catch((err) => { console.log(err) })
+      console.time('总耗时')
+      console.log(this.target, this.home, 'xxxxxxxx')
+      this.target = await this.RLD.simpleMode().catch(() => {})
       uni.hideLoading()
-      console.timeEnd()
+      uni.showToast({
+        title: '久等了',
+        duration: 1000
+      })
+      console.timeEnd('总耗时')
     }
   },
   components: { RoadLine }
