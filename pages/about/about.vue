@@ -1,10 +1,13 @@
 <template>
   <div class="about-box">
         <image class="theme-img" src="/static/logo.png" />
-        <div>多路优选 v0.1 beta</div>
+        <div>多路优选 v1.0 beta</div>
         <div class="theme-color">—— 一款单日多目的地， 行程规划APP ——</div>
         <div class="warn-box">
-          免责声明: 现为测试的第一版，不要太迷信app给出的路程，目标过多请谨慎使用，还处于优化阶段。
+          不免责声明: 不精准我全责。<br/>
+          <view class="margin-top-lg"></view>
+          提需求和吐槽： <br/>
+          qq：1324022569 Wx：bazijunsd
           </div>
   </div>
 </template>
@@ -24,7 +27,7 @@ export default {
   padding: 30rpx;
   position: relative;
   height: 100vh;
-  color: #666666;
+  color: rgb(184, 184, 184);
   .warn-box{
     padding: 30rpx;
     position: absolute;

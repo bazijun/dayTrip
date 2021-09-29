@@ -2,19 +2,19 @@
   <view>
     <view class="console-box">
       <view class="flex-se">
-        <u-button :type="mode === 'transit' ? 'warning' : 'primary'" @click="setOrderly('transit', type)">公交地铁</u-button>
-        <u-button :type="mode === 'bicycling' ? 'warning' : 'primary'" @click="setOrderly('bicycling', type)">骑行</u-button>
-        <u-button :type="mode === 'walking' ? 'warning' : 'primary'" @click="setOrderly('walking', type)">步行</u-button>
-        <u-button :type="mode === 'driving' ? 'warning' : 'primary'" @click="setOrderly('driving', type)">驾车</u-button>
+        <u-button :type="mode === 'driving' ? 'warning' : 'primary'" :ripple="true" @click="setOrderly('driving', type)">驾车</u-button>
+        <u-button :type="mode === 'bicycling' ? 'warning' : 'primary'" :ripple="true" @click="setOrderly('bicycling', type)">骑行</u-button>
+        <u-button :type="mode === 'walking' ? 'warning' : 'primary'" :ripple="true" @click="setOrderly('walking', type)">步行</u-button>
+        <u-button :type="mode === 'transit' ? 'warning' : 'primary'" :ripple="true"  @click="setOrderly('transit', type)">公交地铁</u-button>
       </view>
       <!-- test -->
       <view class="margin-top-lg"></view>
       <u-row gutter="20">
         <u-col span="6">
-          <u-button type="default" @click="setOrderly(mode, 'distance')">距离</u-button>
+          <u-button :type="type === 'distance' ? 'success' : 'default'"  :ripple="true"  size="small" @click="setOrderly(mode, 'distance')" >距   离</u-button>
         </u-col>
         <u-col span="6">
-          <u-button type="default" @click="setOrderly(mode, 'duration')">耗时</u-button>
+          <u-button :type="type === 'duration' ? 'success' : 'default'" :ripple="true"  size="small" @click="setOrderly(mode, 'duration')">耗   时</u-button>
         </u-col>
       </u-row>
       <view></view>
@@ -61,22 +61,27 @@ export default {
     this.RLD = null
   },
   methods: {
-    async setOrderly (mode, type) {
+    setOrderly (mode, type) {
       this.mode = mode
       this.type = type
+      this.RLD.mode = mode
+      this.RLD.type = type
       uni.showLoading({
         title: '会有点久，莫急',
         mask: true
       })
       console.time('总耗时')
-      console.log(this.target, this.home, 'xxxxxxxx')
-      this.target = await this.RLD.simpleMode().catch(() => {})
-      uni.hideLoading()
-      uni.showToast({
-        title: '久等了',
-        duration: 1000
-      })
-      console.timeEnd('总耗时')
+      this.RLD.standardMode().then(res => {
+        console.log(res)
+        this.target = res
+        console.table(res)
+        uni.hideLoading()
+        uni.showToast({
+          title: '久等了',
+          duration: 1000
+        })
+        console.timeEnd('总耗时')
+      }).catch((err) => { console.log(err) })
     }
   },
   components: { RoadLine }

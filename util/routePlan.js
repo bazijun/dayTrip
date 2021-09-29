@@ -37,7 +37,7 @@ export class RoutePlan {
     this.index = 1
   }
 
-  async standardMode (start, targets) { // 标准模式 <迪杰斯特拉算法(Dijkstra)> => 递归遍历 运算时间为 简单模式的targets.length倍
+  async standardMode (start = this.home, targets = this.target) { // 标准模式 <迪杰斯特拉算法(Dijkstra)> => 递归遍历 运算时间为 简单模式的targets.length倍
     console.log(`\n================ ${this.index}   ${this.mode}  《==》  ${this.type}   ================`)
     let routeLine = []
     this.index++
@@ -54,13 +54,14 @@ export class RoutePlan {
     const sortTarget = routeLine.sort((a, b) => a.route - b.route) // 排序后的 target 数组
     const mark = sortTarget[0] // 标记点 (以排序成功的第一位目标点)
     const noMark = sortTarget.slice(1) // 未标记点(名次不为一的余下目标点)
-    console.table(sortTarget)
     this.targetSequence = [...this.targetSequence, mark]
+    console.table(sortTarget)
+    console.table(this.targetSequence)
     if (this.targetSequence.length !== this.target.length) {
       await this.standardMode(mark, noMark)
     } else {
       const targetSequence = this.targetSequence
-      this.targetSequence = []
+      // this.targetSequence = []
       this.index = 1
       console.log('=====结束=====')
       return targetSequence

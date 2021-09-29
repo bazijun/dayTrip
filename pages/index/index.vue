@@ -151,7 +151,6 @@ export default {
     getList () {
       // 初次进入 app，currentRoute 数据是undefined, 赋值给 home 和 list，后面的条件会失效。
       const { home, target, id } = this.$store.state.currentRoute
-      console.log(this.$store.state.currentRoute)
       if (id) {
         this.home = home
         this.list = target
@@ -177,7 +176,6 @@ export default {
             cancelText: '取消',
             confirmText: '启动！',
             success: res => {
-              console.log(this.home, 'home')
               if (res.confirm) {
                 const payload = {
                   id: this.storeId,
