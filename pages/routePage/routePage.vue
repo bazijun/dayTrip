@@ -8,16 +8,16 @@
         <u-button :type="mode === 'transit' ? 'warning' : 'primary'" :ripple="true"  @click="setOrderly('transit', type)">公交地铁</u-button>
       </view>
       <!-- test -->
-      <view class="margin-top-lg"></view>
+      <view class="control-box">
       <u-row gutter="20">
         <u-col span="6">
-          <u-button :type="type === 'distance' ? 'success' : 'default'"  :ripple="true"  size="small" @click="setOrderly(mode, 'distance')" >距   离</u-button>
+          <u-button :type="type === 'distance' ? 'success' : 'default'"  :ripple="true" shape="circle" @click="setOrderly(mode, 'distance')" >距   离</u-button>
         </u-col>
         <u-col span="6">
-          <u-button :type="type === 'duration' ? 'success' : 'default'" :ripple="true"  size="small" @click="setOrderly(mode, 'duration')">耗   时</u-button>
+          <u-button :type="type === 'duration' ? 'success' : 'default'" :ripple="true" shape="circle" @click="setOrderly(mode, 'duration')">耗   时</u-button>
         </u-col>
       </u-row>
-      <view></view>
+      </view>
     </view>
     <view class="time-line-box">
       <road-line :mode="mode" :home="home" :target="target"></road-line>
@@ -36,23 +36,40 @@ export default {
       target: [],
       mode: 'driving',
       type: 'distance', // distance or duration
+      routeLineCache: { // 路线的缓存
+        driving: {
+          distance: [],
+          duration: []
+        },
+        bicycling: {
+          distance: [],
+          duration: []
+        },
+        walking: {
+          distance: [],
+          duration: []
+        },
+        transit: {
+          distance: [],
+          duration: []
+        }
+      },
       RLD: null // RoutePlan类的实例
     }
   },
   onLoad (option) {
-    // const { home, target } = JSON.parse(decodeURIComponent(option.list))
-    // this.home = home
-    // this.target = target
-    const test = uni.getStorageSync('store')
-    this.target = test[0].target
-    this.home = test[0].home
-    const routeLineData = {
+    const { home, target } = JSON.parse(decodeURIComponent(option.list))
+    this.home = home
+    this.target = target
+    // const test = uni.getStorageSync('store')
+    // this.target = test[0].target
+    // this.home = test[0].home
+    this.RLD = new RoutePlan({
       home: this.home,
       target: this.target,
       mode: this.mode,
       type: this.type
-    }
-    this.RLD = new RoutePlan(routeLineData)
+    })
     this.setOrderly(this.mode, this.type)
   },
   onUnload () {
@@ -61,27 +78,30 @@ export default {
     this.RLD = null
   },
   methods: {
-    setOrderly (mode, type) {
+    async setOrderly (mode, type) {
       this.mode = mode
       this.type = type
       this.RLD.mode = mode
       this.RLD.type = type
+      // 判断是否存在缓存中。缓存中有就不请求了。直接用缓存数据
+      if (this.routeLineCache[mode][type].length) {
+        this.target = this.routeLineCache[mode][type]
+        return
+      }
       uni.showLoading({
         title: '会有点久，莫急',
         mask: true
       })
       console.time('总耗时')
-      this.RLD.standardMode().then(res => {
-        console.log(res)
-        this.target = res
-        console.table(res)
-        uni.hideLoading()
-        uni.showToast({
-          title: '久等了',
-          duration: 1000
-        })
-        console.timeEnd('总耗时')
-      }).catch((err) => { console.log(err) })
+      this.target = await this.RLD.standardMode().catch(() => {})
+      this.routeLineCache[mode][type] = this.target
+      console.timeEnd('总耗时')
+      // console.table(this.target)
+      uni.hideLoading()
+      uni.showToast({
+        title: '久等了',
+        duration: 1000
+      })
     }
   },
   components: { RoadLine }
@@ -98,5 +118,13 @@ export default {
 .time-line-box {
   width: 680rpx;
   margin: auto;
+}
+.control-box {
+  widows: 700rxp;
+  border-radius: 20rpx;
+  // border: 2rpx solid red;
+  background: #f8e1e1;
+  padding: 15rpx;
+  margin: 20rpx
 }
 </style>

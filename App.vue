@@ -1,6 +1,9 @@
 <script>
+import api from './util/util.js'
 export default {
   onLaunch: function () {
+    const res = api.mpLocation()
+    console.log(res, 'onLunch')
     // console.log('App Launch')
   },
   onShow: function () {

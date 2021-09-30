@@ -14,6 +14,7 @@ const store = new Vuex.Store({
   mutations: {
     SET_VIP (state) {
       state.vip = true
+      uni.setStorageSync('vip', 'yes')
     },
     ADD_ROUTE_STORE (state, payload) {
       let arr = []

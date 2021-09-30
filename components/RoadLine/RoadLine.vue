@@ -1,12 +1,12 @@
 <template>
-    <view class="roadline-content">
+  <view class="roadline-content">
     <!-- 家 -->
     <view class="home-box">
       <view class="home-on-box">
-        <image  v-if="mode === 'transit'" class="theme-img" src="/static/img/bus.png" mode="widthFix" />
+        <image v-if="mode === 'transit'" class="theme-img" src="/static/img/bus.png" mode="widthFix" />
         <image v-else-if="mode === 'driving'" class="theme-img" src="/static/img/car.png" mode="widthFix" />
-        <image v-else-if="mode === 'walking'" class="theme-img" src="/static/img/walk.png" mode="widthFix"/>
-        <image v-else-if="mode === 'bicycling'" class="theme-img" src="/static/img/bike.png" mode="widthFix"/>
+        <image v-else-if="mode === 'walking'" class="theme-img" src="/static/img/walk.png" mode="widthFix" />
+        <image v-else-if="mode === 'bicycling'" class="theme-img" src="/static/img/bike.png" mode="widthFix" />
         <view class="width-xs text-center">
           <view class="flex-aic-jcc margin-top-lg">
             <image class="icon-img" src="/static/img/world.png" />
@@ -18,27 +18,28 @@
         </view>
       </view>
     </view>
-    <view class="down-img">
-        <image src="../../static/img/down/down-6.png" mode="widthFix"/>
+    <view class="down-img-box">
+      <image class="down-img" src="../../static/img/down/down-6.png" mode="widthFix" />
     </view>
     <!-- 目标列表 -->
     <view v-for="(item, index) in target" :key="item.id">
-        <view class="roadline-list">
+      <view class="roadline-list">
         <!-- 定位时的当前位置 -->
         <view v-if="false" class="current-loaction">
           <view class="current-btn">当前位置</view>
         </view>
         <u-badge :offset="[-8,-8]" type="success" :count="index + 1"></u-badge>
         <view>
-          <view class="t-name width-lg text-line-one"><text class="text-theme text-margin-r">{{(target.length - 1) === index ? '终点站：' : T[index]}}</text>{{item.name}}</view>
+          <view class="t-name width-lg text-line-one"><text
+              class="text-theme text-margin-r">{{(target.length - 1) === index ? '终点站：' : T[index]}}</text>{{item.name}}</view>
           <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>{{item.address}}</view>
         </view>
         <u-icon name="map-fill" color="#1F82FF" size="65" @click="getLocation(item)"></u-icon>
       </view>
       <!-- 下个目标 指引图标 和 数据板 -->
       <view class="flex-aic-jcc">
-        <view class="down-img">
-            <image src="../../static/img/down/down-6.png" mode="widthFix"/>
+        <view class="down-img-box">
+          <image class="down-img" src="../../static/img/down/down-6.png" mode="widthFix" />
         </view>
         <!-- 数据板子 -->
         <!-- <view class="data-panel">
@@ -48,11 +49,11 @@
     </view>
     <!-- 返家 -->
     <u-button shape="circle" :custom-style="btnCustomStyle" type="info" :ripple="true" @click="goBack">
-        回
-        <u-icon name="home-fill" color="#fff" size="60" style="padding:15rpx"></u-icon>
-        家
+      回
+      <u-icon name="home-fill" color="#fff" size="60" style="padding:15rpx"></u-icon>
+      家
     </u-button>
-</view>
+  </view>
 </template>
 
 <script>
@@ -141,7 +142,7 @@ export default {
   border-radius: 20rpx;
   box-shadow: 0px 2px 8px 0px rgba(16, 105, 231, 0.2);
   .home-on-box {
-    padding:20rpx;
+    padding: 20rpx;
     width: 630rpx;
     height: 220rpx;
     margin: 10rpx;
@@ -199,26 +200,26 @@ export default {
     border: 1px solid;
   }
 }
-.down-img{
-    display: flex;
-    justify-content: center;
-    image{
-        width: 80rpx;
-    }
+.down-img-box {
+  display: flex;
+  justify-content: center;
+  .down-img {
+    width: 80rpx;
+  }
 }
-.home-btn{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 300rpx;
+.home-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300rpx;
 }
-.warning-btn{
-    margin-left: 10rpx;
-    width: 120rpx;
-    text-align: center;
-    background: $theme-warning;
-    color: #fff;
-    font-size: 25rpx;
-    border-radius: 10rpx;
+.warning-btn {
+  margin-left: 10rpx;
+  width: 120rpx;
+  text-align: center;
+  background: $theme-warning;
+  color: #fff;
+  font-size: 25rpx;
+  border-radius: 10rpx;
 }
 </style>

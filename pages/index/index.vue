@@ -30,7 +30,7 @@
           <view style="width:10rpx"></view>
           <u-icon name="reload" color="#fff" size="40" @click="reloadTargetList"></u-icon>
         </view>
-        <u-icon name="plus-circle-fill" color="#fff" size="75" @click="targetAdd"></u-icon>
+        <u-icon name="plus-circle-fill" color="#fff" size="100" @click="targetAdd"></u-icon>
       </view>
       <view class="target-content">
         <view style="margin: 20rpx 0;" v-for="(item, index) in list" :key="item.id">
@@ -193,7 +193,9 @@ export default {
           })
         } else {
           this.show = true
-          setTimeout(() => { this.isfocus = true }, 0)
+          this.$nextTick(() => {
+            this.isfocus = true
+          })
         }
         return false
       }
@@ -239,16 +241,19 @@ export default {
       this.storeId = this.routeStore[0].id // 保存过一次 就不用保存了。
     },
     outSet () {
-      const loaction = api.mpLocation()
-      if (loaction) return
+      // const loaction = api.mpLocation()
+      // if (loaction) return
       if (!this.home.name) {
         uni
           .chooseLocation()
           .then((res) => {
+            console.log(res)
             if (!res[1].errMsg) return
             this.home = res[1]
           })
-          .catch((err) => console.log(err))
+          .catch(() => {
+            api.mpOptionLocation()
+          })
         return
       }
       uni
@@ -257,11 +262,14 @@ export default {
           longitude: this.home.longitude
         })
         .then((res) => {
+          console.log(res)
           this.closeSwipe()
           if (!res[1].errMsg) return
           this.home = res[1]
         })
-        .catch((err) => console.log(err))
+        .catch(() => {
+          api.mpOptionLocation()
+        })
     },
     swipeClick (id, index1) {
       const index = this.list.findIndex(v => v.id === id)
@@ -281,7 +289,7 @@ export default {
       })
     },
     targetAdd () {
-      const { vip } = this.$store.state
+      const vip = uni.getStorageSync('vip')
       if (this.list.length < 5 || vip) {
         if (this.list.length === 10) {
           uni.showToast({
@@ -302,11 +310,13 @@ export default {
             }
             this.list = [targetList, ...this.list]
           })
-          .catch((err) => console.log(err))
+          .catch(() => {
+            api.mpOptionLocation()
+          })
       } else {
         uni.showModal({
           title: '提示',
-          content: '普通用户目标地址，已达上线。升级荣耀会员，即可解锁10个目标地址！',
+          content: '普通用户目标地址，已达上线。升级为红宝石会员，即可解锁10个目标地址！',
           cancelText: '拒绝！',
           confirmText: '996元/天',
           success: res => {
@@ -317,9 +327,10 @@ export default {
                 duration: 2000
               })
             } else if (res.cancel) {
+              // state 同 storage 同时生效
               this.$store.commit('SET_VIP')
               uni.showToast({
-                title: '',
+                title: '解锁成功！',
                 duration: 1500
               })
             }
@@ -342,7 +353,9 @@ export default {
           }
           this.list[index] = targetList
         })
-        .catch((err) => console.log(err))
+        .catch(() => {
+          api.mpOptionLocation()
+        })
     },
     reloadTargetList () {
       if (this.list.length === 0) return

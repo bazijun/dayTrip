@@ -47,21 +47,20 @@ export class RoutePlan {
         from: `${start.latitude},${start.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
-      const route = await this.diffDistance(path).catch((err) => { console.log(err) })
+      const route = await this.diffDistance(path).catch(() => {})
       routeLine = [...routeLine, { ...v, route: route }]
       console.log(`${route} ===> ${this.type === 'distance' ? '距离' : '耗时'} ===> ${v.name}`)
     }
     const sortTarget = routeLine.sort((a, b) => a.route - b.route) // 排序后的 target 数组
-    const mark = sortTarget[0] // 标记点 (以排序成功的第一位目标点)
-    const noMark = sortTarget.slice(1) // 未标记点(名次不为一的余下目标点)
+    const mark = sortTarget[0] // 标记点对象 (以排序成功的第一位目标点)
+    const noMark = sortTarget.slice(1) // 未标记点数组 (名次不为一的余下目标点)
     this.targetSequence = [...this.targetSequence, mark]
-    console.table(sortTarget)
-    console.table(this.targetSequence)
+    // console.table(sortTarget)
     if (this.targetSequence.length !== this.target.length) {
-      await this.standardMode(mark, noMark)
+      return this.standardMode(mark, noMark)
     } else {
       const targetSequence = this.targetSequence
-      // this.targetSequence = []
+      this.targetSequence = []
       this.index = 1
       console.log('=====结束=====')
       return targetSequence
@@ -77,12 +76,12 @@ export class RoutePlan {
         from: `${this.home.latitude},${this.home.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
-      const route = await this.diffDistance(path).catch((err) => { console.log(err) })
+      const route = await this.diffDistance(path).catch(() => {})
       routeLine = [...routeLine, { ...v, route: route }]
       console.log(`${route}===>${this.type === 'distance' ? '距离' : '耗时'}===>${v.name}`)
     }
     const simpleLine = routeLine.sort((a, b) => a.route - b.route)
-    console.table(simpleLine)
+    // console.table(simpleLine)
     return simpleLine
   }
 
