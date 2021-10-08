@@ -18,6 +18,7 @@ export default {
     })
   },
   mpOptionLocation () { // 拒绝第一次系统授权后，必须用户手动开启位置授权了。
+    // #ifdef MP
     uni.getSetting({
       success: function (res) {
         const status = res.authSetting
@@ -28,6 +29,7 @@ export default {
             success: function (res) {
               if (res.confirm) {
                 uni.openSetting({
+
                   success: function (data) {
                     if (data.authSetting['scope.userLocation'] === true) {
                       uni.showToast({
@@ -58,6 +60,7 @@ export default {
         }
       }
     })
+    // #endif
   },
   /* 单位换算 */
   toKm (m) {

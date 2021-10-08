@@ -14,6 +14,7 @@ export default {
   nextStand () {
 
   },
+  qqMap: qqMap,
   myDirection (data) {
     return new Promise((resolve, reject) => {
       qqMap.direction({

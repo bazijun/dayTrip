@@ -35,6 +35,7 @@
       <view class="target-content">
         <view style="margin: 20rpx 0;" v-for="(item, index) in list" :key="item.id">
           <u-swipe-action
+          class="touch-action"
           :show="item.show"
           :index="item.id"
           btn-width="120"
@@ -383,6 +384,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.touch-action {
+  touch-action: none !important
+}
 .home-box {
   overflow: hidden;
   height: 320rpx;

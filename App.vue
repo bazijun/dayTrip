@@ -2,8 +2,10 @@
 import api from './util/util.js'
 export default {
   onLaunch: function () {
+    // #ifdef MP
     const res = api.mpLocation()
     console.log(res, 'onLunch')
+    // #endif
     // console.log('App Launch')
   },
   onShow: function () {
@@ -27,4 +29,8 @@ page {
   color: #222222;
   word-break: break-all;
 }
+// 滑动bug
+/* * {
+  touch-action: none;
+} */
 </style>

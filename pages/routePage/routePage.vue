@@ -27,7 +27,8 @@
 
 <script>
 // import api from '../../util/util'
-import { RoutePlan } from '../../util/routePlan'
+import routeApi from '../../util/routePlan'
+// import { RoutePlan } from '../../util/routePlan'
 import RoadLine from '../../components/RoadLine/RoadLine.vue'
 export default {
   data () {
@@ -61,16 +62,26 @@ export default {
     const { home, target } = JSON.parse(decodeURIComponent(option.list))
     this.home = home
     this.target = target
-    // const test = uni.getStorageSync('store')
-    // this.target = test[0].target
-    // this.home = test[0].home
-    this.RLD = new RoutePlan({
-      home: this.home,
-      target: this.target,
-      mode: this.mode,
-      type: this.type
+    // test
+    console.log('xxx')
+    console.log(routeApi.qqMap)
+    routeApi.myDirection({
+      mode: 'driving',
+      from: `${home.latitude},${home.longitude}`,
+      to: `${target[0].latitude},${target[0].longitude}`
+    }).then(res => {
+      console.log(res, '成功')
+    }).catch(err => {
+      console.log(err, '失败')
     })
-    this.setOrderly(this.mode, this.type)
+    // testEnd
+    // this.RLD = new RoutePlan({
+    //   home: this.home,
+    //   target: this.target,
+    //   mode: this.mode,
+    //   type: this.type
+    // })
+    // this.setOrderly(this.mode, this.type)
   },
   onUnload () {
     console.log('instance destroy')
