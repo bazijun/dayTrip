@@ -37,6 +37,8 @@ export class RoutePlan {
     this.index = 1
   }
 
+  // 公交如何距离太近调用计算 相聚位置接口。算距离。
+  // 或者推荐 走路 或 骑行
   async standardMode (start = this.home, targets = this.target) { // 标准模式 <迪杰斯特拉算法(Dijkstra)> => 递归遍历 运算时间为 简单模式的targets.length倍
     console.log(`\n================ ${this.index}   ${this.mode}  《==》  ${this.type}   ================`)
     let routeLine = []

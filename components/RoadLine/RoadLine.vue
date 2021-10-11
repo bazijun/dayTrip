@@ -23,7 +23,7 @@
     </view>
     <!-- 目标列表 -->
     <view v-for="(item, index) in target" :key="item.id">
-      <view class="roadline-list">
+      <view class="roadline-list" @click="getLocation(item)">
         <!-- 定位时的当前位置 -->
         <view v-if="false" class="current-loaction">
           <view class="current-btn">当前位置</view>
@@ -34,7 +34,7 @@
               class="text-theme text-margin-r">{{(target.length - 1) === index ? '终点站：' : T[index]}}</text>{{item.name}}</view>
           <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>{{item.address}}</view>
         </view>
-        <u-icon name="map-fill" color="#1F82FF" size="65" @click="getLocation(item)"></u-icon>
+        <u-icon name="map-fill" color="#1F82FF" size="65" ></u-icon>
       </view>
       <!-- 下个目标 指引图标 和 数据板 -->
       <view class="flex-aic-jcc">

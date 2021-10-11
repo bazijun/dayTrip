@@ -11,10 +11,14 @@
       <view class="control-box">
       <u-row gutter="20">
         <u-col span="6">
-          <u-button :type="type === 'distance' ? 'success' : 'default'"  :ripple="true" shape="circle" @click="setOrderly(mode, 'distance')" >距   离</u-button>
+          <u-button :hair-line="false" :type="type === 'distance' ? 'success' : 'default'"  :ripple="true"
+          @click="setOrderly(mode, 'distance')" >距离排序
+          <u-badge :offset="[0,0]" type="error" count="推荐"></u-badge>
+          </u-button>
         </u-col>
         <u-col span="6">
-          <u-button :type="type === 'duration' ? 'success' : 'default'" :ripple="true" shape="circle" @click="setOrderly(mode, 'duration')">耗   时</u-button>
+          <u-button :hair-line="false" :type="type === 'duration' ? 'success' : 'default'" :ripple="true"
+          @click="setOrderly(mode, 'duration')">耗时排序</u-button>
         </u-col>
       </u-row>
       </view>
@@ -86,6 +90,10 @@ export default {
       // 判断是否存在缓存中。缓存中有就不请求了。直接用缓存数据
       if (this.routeLineCache[mode][type].length) {
         this.target = this.routeLineCache[mode][type]
+        uni.showToast({
+          title: '模式切换成功',
+          duration: 1000
+        })
         return
       }
       uni.showLoading({
