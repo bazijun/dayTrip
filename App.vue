@@ -3,7 +3,10 @@ import api from './util/util.js'
 export default {
   onLaunch: function () {
     const res = api.mpLocation()
-    console.log(res, 'onLunch')
+    uni.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })
     // console.log('App Launch')
   },
   onShow: function () {
