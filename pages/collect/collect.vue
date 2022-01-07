@@ -7,7 +7,7 @@
             <u-icon name="star-fill" :color="item.id === 1632488015398 ? '#FF960E' : '#2881FF'" size="40"></u-icon>
             <view class="text-lg text-margin-l-sm" style="line-height: 45rpx">{{item.name}}</view>
           </view>
-          <u-icon name="arrow-rightward" color="#ADAAAA" size="45"></u-icon>
+          <u-icon name="arrow-left-double" color="#ADAAAA" size="45"></u-icon>
         </view>
       </u-swipe-action>
     </view>

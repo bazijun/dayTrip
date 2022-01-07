@@ -1,15 +1,21 @@
 export default {
-  mpLocation () { // 初次位置授权
+
+  homeInitialValue: null,
+
+  mpLocation (callback) { // 初次位置授权
     uni.getSetting({
       success: res => {
         if (!res.authSetting['scope.userLocation']) {
         // 用户位置授权
           uni.authorize({
-            scope: 'scope.userLocation'
+            scope: 'scope.userLocation',
+            success () {
+              console.log('允许了')
+              callback && callback()
+            }
           })
-          return false
         } else {
-          return true
+          callback && callback()
         }
       },
       fail: err => {
@@ -17,7 +23,8 @@ export default {
       }
     })
   },
-  mpOptionLocation () { // 拒绝第一次系统授权后，必须用户手动开启位置授权了。
+
+  mpOptionLocation (callback) { // 拒绝第一次系统授权后，必须用户手动开启位置授权了。
     uni.getSetting({
       success: function (res) {
         const status = res.authSetting
@@ -35,6 +42,7 @@ export default {
                         icon: 'success',
                         duration: 1000
                       })
+                      callback && callback()
                       // 授权成功之后，再调用chooseLocation选择地方
                       // uni.chooseLocation({
                       //   success: function (res) {
@@ -59,6 +67,7 @@ export default {
       }
     })
   },
+
   /* 单位换算 */
   toKm (m) {
     if (m < 1000) return m + '米'

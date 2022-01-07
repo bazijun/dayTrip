@@ -21,7 +21,8 @@
 			"path": "pages/routePage/routePage",
 			"style": {
 				"navigationBarTitleText": "路线",
-				"navigationBarBackgroundColor": "#FFFFFF"
+				"navigationBarTextStyle": "light",
+				"navigationBarBackgroundColor": "#1F82FF"
 			}
 		},
 		{

@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view ref="indexCom">
     <view class="home-box" @click="outSet">
       <view v-if="!home.errMsg">
         <image class="theme-img" src="/static/img/home.png" />
@@ -8,57 +8,120 @@
       <view class="home-on-box" v-else>
         <image class="theme-img" src="/static/img/home-on.png" />
         <view class="width-sm text-center">
-          <view class="t-name text-line-one">{{home.name || 'Home'}}</view>
-          <view class="t-address text-line-two" v-if="home.address"><text class="text-l-bold">详细地址:</text>{{home.address}}</view>
+          <view class="t-name text-line-one">{{ home.name || "Home" }}</view>
+          <view class="t-address text-line-two" v-if="home.address"
+            ><text class="text-l-bold">详细地址:</text>{{ home.address }}</view
+          >
           <view class="flex-aic-jcc margin-top-lg">
             <image class="icon-img" src="/static/img/world.png" />
-            <view class="text-sm">{{home.latitude}} - {{home.longitude}}</view>
+            <view class="text-sm">
+              {{ home.latitude }} - {{ home.longitude }}
+            </view>
           </view>
         </view>
       </view>
     </view>
-     <!-- 新建路线 -->
-    <u-button @click="newRoute" v-if="storeId" shape="circle" :custom-style="btnCustomStyle" type="info" :ripple="true">
-        <u-icon name="plus" color="#fff" size="55" style="padding-right:15rpx"></u-icon>
-        新建路线
+    <!-- 新建路线 -->
+    <u-button
+      @click="newRoute"
+      v-if="storeId"
+      shape="circle"
+      :custom-style="btnCustomStyle"
+      type="info"
+      :ripple="true"
+    >
+      <u-icon
+        name="plus"
+        color="#fff"
+        size="55"
+        style="padding-right: 15rpx"
+      ></u-icon>
+      新建空白路线页
     </u-button>
     <view class="target-box">
       <view class="target-head">
         <view class="flex">
           <u-icon name="map-fill" color="#043963" size="50"></u-icon>
           <view class="title-text" style="color: #043963">目的地-列表</view>
-          <view style="width:10rpx"></view>
-          <u-icon name="reload" color="#fff" size="40" @click="reloadTargetList"></u-icon>
+          <view style="width: 10rpx"></view>
+          <u-icon
+            name="reload"
+            color="#fff"
+            size="40"
+            @click="reloadTargetList"
+          ></u-icon>
         </view>
-        <u-icon name="plus-circle-fill" color="#fff" size="100" @click="targetAdd"></u-icon>
+        <u-icon
+          name="plus-circle-fill"
+          color="#fff"
+          size="100"
+          @click="targetAdd"
+        ></u-icon>
       </view>
       <view class="target-content">
-        <view style="margin: 20rpx 0;" v-for="(item, index) in list" :key="item.id">
+        <view
+          style="margin: 20rpx 0"
+          v-for="(item, index) in list"
+          :key="item.id"
+        >
           <u-swipe-action
-          :show="item.show"
-          :index="item.id"
-          btn-width="120"
-          @click="swipeClick" @open="open" :options="options">
+            :show="item.show"
+            :index="item.id"
+            btn-width="120"
+            @click="swipeClick"
+            @open="open"
+            :options="options"
+          >
             <view class="target-list">
               <view>
-                <view class="t-name width-lg text-line-one">{{item.name || '目标-' + index }}</view>
-                <view class="t-address width-lg text-line-one" v-if="item.address"><text class="text-l-bold">详细地址:</text>{{item.address}}</view>
+                <view class="t-name width-lg text-line-one">{{
+                  item.name || "目标-" + index
+                }}</view>
+                <view
+                  class="t-address width-lg text-line-one"
+                  v-if="item.address"
+                  ><text class="text-l-bold">详细地址:</text
+                  >{{ item.address }}</view
+                >
               </view>
-              <u-icon name="arrow-right-double" color="#1F82FF" size="60"></u-icon>
+              <u-icon
+                name="arrow-left-double"
+                color="#1F82FF"
+                size="60"
+              ></u-icon>
             </view>
           </u-swipe-action>
         </view>
       </view>
     </view>
-    <u-modal v-model="show" show-cancel-button @confirm="saveRouteGo" @cancel="isfocus = false"
-    confirm-text="保存并启动" cancel-text="取消" title="路线保存">
+    <u-modal
+      v-model="show"
+      show-cancel-button
+      @confirm="saveRouteGo"
+      @cancel="isfocus = false"
+      confirm-text="保存并启动"
+      cancel-text="取消"
+      title="路线保存"
+    >
       <view class="input-box">
-        <u-input v-model="storeName"
-        :focus="isfocus" height="70" :border="true" input-align="center"
-        placeholder="为该路线取个名字" border-color="#1F82FF" maxlength="15"/>
+        <u-input
+          v-model="storeName"
+          :focus="isfocus"
+          height="70"
+          :border="true"
+          input-align="center"
+          placeholder="为该路线取个名字"
+          border-color="#1F82FF"
+          maxlength="15"
+        />
       </view>
     </u-modal>
-    <u-tabbar :list="tabbar" :mid-button="true" active-color="#1F82FF" :before-switch="goRoute"></u-tabbar>
+    <u-tabbar
+      :list="tabbar"
+      :mid-button="true"
+      active-color="#1F82FF"
+      :before-switch="goRoute"
+    ></u-tabbar>
   </view>
 </template>
 
@@ -125,15 +188,18 @@ export default {
       ]
     }
   },
+
   computed: {
     routeStore () {
       return this.$store.state.routeStore
     }
   },
+
   onLoad () {
     this.getList()
   },
   methods: {
+
     newRoute () {
       uni.showModal({
         title: '提示',
@@ -148,6 +214,7 @@ export default {
         }
       })
     },
+
     getList () {
       // 初次进入 app，currentRoute 数据是undefined, 赋值给 home 和 list，后面的条件会失效。
       const { home, target, id } = this.$store.state.currentRoute
@@ -157,10 +224,11 @@ export default {
         this.storeId = id
       }
     },
+
     goRoute (index) {
       // const idPd = this.routeStore.some(v => v.name === this.storeName)
       if (index === 1) {
-        if (!this.home.errMsg || (this.list.length === 0)) {
+        if (!this.home.errMsg || this.list.length === 0) {
           uni.showToast({
             title: '请选择起点和目标地点！',
             icon: 'none',
@@ -175,7 +243,7 @@ export default {
             content: '路线收藏的数据，若有修改会自动保存',
             cancelText: '取消',
             confirmText: '启动！',
-            success: res => {
+            success: (res) => {
               if (res.confirm) {
                 const payload = {
                   id: this.storeId,
@@ -186,7 +254,9 @@ export default {
                 const list = JSON.stringify(payload)
                 // 数据太长 需要进行 encodeURIComponent 编码
                 uni.navigateTo({
-                  url: `../routePage/routePage?list=${encodeURIComponent(list)}`
+                  url: `../routePage/routePage?list=${encodeURIComponent(
+                    list
+                  )}`
                 })
               }
             }
@@ -201,10 +271,11 @@ export default {
       }
       return true
     },
+
     saveRouteGo () {
       // 名字不能重复
       console.log(this.routeStore)
-      const namePd = this.routeStore.some(v => v.name === this.storeName)
+      const namePd = this.routeStore.some((v) => v.name === this.storeName)
       if (namePd) {
         this.show = true
         uni.showToast({
@@ -240,6 +311,7 @@ export default {
       })
       this.storeId = this.routeStore[0].id // 保存过一次 就不用保存了。
     },
+
     outSet () {
       // const loaction = api.mpLocation()
       // if (loaction) return
@@ -247,14 +319,15 @@ export default {
         uni
           .chooseLocation()
           .then((res) => {
-            console.log(res)
-            if (!res[1].errMsg) return
+            if (!res[1]?.errMsg) {
+              api.mpOptionLocation(getApp().getHome)
+              return
+            }
             this.home = res[1]
           })
           .catch(() => {
-            api.mpOptionLocation()
+            api.mpOptionLocation(getApp().getHome)
           })
-        return
       }
       uni
         .chooseLocation({
@@ -262,25 +335,26 @@ export default {
           longitude: this.home.longitude
         })
         .then((res) => {
-          console.log(res)
           this.closeSwipe()
-          if (!res[1].errMsg) return
+          if (!res[1]?.errMsg) return
           this.home = res[1]
         })
         .catch(() => {
-          api.mpOptionLocation()
+          api.mpOptionLocation(getApp().getHome)
         })
     },
+
     swipeClick (id, index1) {
-      const index = this.list.findIndex(v => v.id === id)
+      const index = this.list.findIndex((v) => v.id === id)
       if (index1 === 1) {
         this.list.splice(index, 1)
       } else {
         this.targetEdit(index)
       }
     },
+
     open (id) {
-      const index = this.list.findIndex(v => v.id === id)
+      const index = this.list.findIndex((v) => v.id === id)
       // 先将正在被操作的swipeAction标记为打开状态，否则由于props的特性限制，
       // 原本为'false'，再次设置为'false'会无效
       this.list[index].show = true
@@ -288,6 +362,7 @@ export default {
         if (v.id !== id) this.list[idx].show = false
       })
     },
+
     targetAdd () {
       const vip = uni.getStorageSync('vip')
       if (this.list.length < 5 || vip) {
@@ -299,10 +374,14 @@ export default {
           })
           return
         }
-        uni.chooseLocation()
+        uni
+          .chooseLocation()
           .then((res) => {
             this.closeSwipe()
-            if (!res[1].errMsg) return
+            if (!res[1]?.errMsg) {
+              api.mpOptionLocation(getApp().getHome)
+              return
+            }
             const targetList = {
               ...res[1],
               show: false,
@@ -311,15 +390,16 @@ export default {
             this.list = [targetList, ...this.list]
           })
           .catch(() => {
-            api.mpOptionLocation()
+            api.mpOptionLocation(getApp().getHome)
           })
       } else {
         uni.showModal({
           title: '提示',
-          content: '普通用户目标地址，已达上线。升级为红宝石会员，即可解锁10个目标地址！',
+          content:
+            '普通用户目标地址，已达上线。升级为红宝石会员，即可解锁10个目标地址！',
           cancelText: '拒绝！',
           confirmText: '996元/天',
-          success: res => {
+          success: (res) => {
             if (res.confirm) {
               uni.showToast({
                 title: '你背叛了工人阶级 !!!',
@@ -338,14 +418,16 @@ export default {
         })
       }
     },
+
     targetEdit (index) {
-      uni.chooseLocation({
-        latitude: this.list[index].latitude,
-        longitude: this.list[index].longitude
-      })
+      uni
+        .chooseLocation({
+          latitude: this.list[index].latitude,
+          longitude: this.list[index].longitude
+        })
         .then((res) => {
           this.closeSwipe()
-          if (!res[1].errMsg) return
+          if (!res[1]?.errMsg) return
           const targetList = {
             ...this.list[index],
             ...res[1],
@@ -354,15 +436,16 @@ export default {
           this.list[index] = targetList
         })
         .catch(() => {
-          api.mpOptionLocation()
+          api.mpOptionLocation(getApp().getHome)
         })
     },
+
     reloadTargetList () {
       if (this.list.length === 0) return
       uni.showModal({
         title: '提示',
         content: '是否确定重置目标列表 ？',
-        success: res => {
+        success: (res) => {
           if (res.confirm) {
             this.list = []
           } else if (res.cancel) {
@@ -370,8 +453,9 @@ export default {
         }
       })
     },
+
     closeSwipe () {
-      this.list = this.list.map(v => {
+      this.list = this.list.map((v) => {
         return {
           ...v,
           show: false
@@ -448,7 +532,7 @@ export default {
     }
   }
 }
-.input-box{
+.input-box {
   width: 500rpx;
   margin: 20rpx auto;
 }

@@ -22,7 +22,7 @@
       <image class="down-img" src="../../static/img/down/down-6.png" mode="widthFix" />
     </view>
     <!-- 目标列表 -->
-    <view v-for="(item, index) in target" :key="item.id">
+    <view v-for="(item, index) in targetList" :key="item.id">
       <view class="roadline-list" @click="getLocation(item)">
         <!-- 定位时的当前位置 -->
         <view v-if="false" class="current-loaction">
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { routePlanPluginView } from '../../util/routePlan'
 export default {
   props: {
     home: {
@@ -70,6 +71,10 @@ export default {
     mode: {
       type: String,
       default: ''
+    },
+    roadMounted: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -96,34 +101,51 @@ export default {
       }
     }
   },
+  computed: {
+    targetList () {
+      return this.roadMounted ? this.target : []
+    }
+  },
   methods: {
     goBack () {
-      uni.openLocation({
-        latitude: this.home.latitude,
-        longitude: this.home.longitude,
+      const endPoint = {
         name: this.home.name,
-        address: this.home.address,
-        success: function () {
-          console.log('success')
-        },
-        fail: function (err) {
-          console.log(err)
-        }
-      })
+        latitude: this.home.latitude,
+        longitude: this.home.longitude
+      }
+      routePlanPluginView(endPoint)
+      // uni.openLocation({
+      //   latitude: this.home.latitude,
+      //   longitude: this.home.longitude,
+      //   name: this.home.name,
+      //   address: this.home.address,
+      //   success: function () {
+      //     console.log('success')
+      //   },
+      //   fail: function (err) {
+      //     console.log(err)
+      //   }
+      // })
     },
     getLocation (location) {
-      uni.openLocation({
-        latitude: location.latitude,
-        longitude: location.longitude,
+      const endPoint = {
         name: location.name,
-        address: location.address,
-        success: function () {
-          console.log('success')
-        },
-        fail: function (err) {
-          console.log(err)
-        }
-      })
+        latitude: location.latitude,
+        longitude: location.longitude
+      }
+      routePlanPluginView(endPoint)
+      // uni.openLocation({
+      //   latitude: location.latitude,
+      //   longitude: location.longitude,
+      //   name: location.name,
+      //   address: location.address,
+      //   success: function () {
+      //     console.log('success')
+      //   },
+      //   fail: function (err) {
+      //     console.log(err)
+      //   }
+      // })
     }
   }
 }
@@ -155,7 +177,8 @@ export default {
   }
 }
 .roadline-content {
-  width: 100%;
+  width: 95%;
+  margin: auto;
   position: relative;
   .roadline-list {
     box-sizing: border-box;

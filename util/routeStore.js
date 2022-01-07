@@ -3,19 +3,13 @@ export const routeStore = [
     id: 1632488015398,
     name: '永恒与一日',
     show: false,
-    /* home: {
-      errMsg: 'chooseLocation:ok',
-      name: '合能珍宝琥珀2期',
-      address: '四川省成都市温江区凤凰南大街174号',
-      latitude: 30.672302,
-      longitude: 103.888693
-    }, */
     home: {
       errMsg: 'chooseLocation:ok',
       name: '东郊记忆',
       address: '四川省成都市成华区建设南支路4号',
       latitude: 30.668741799,
-      longitude: 104.122910899
+      longitude: 104.122910899,
+      id: 1632400064566
     },
     target: [
       {
@@ -44,25 +38,25 @@ export const routeStore = [
         longitude: 104.06592406592,
         show: false,
         id: 1632487639000
-      },
-      {
-        errMsg: 'chooseLocation:ok',
-        name: '五块石电器市场',
-        address: '四川省成都市金牛区五块石东一路与五块石路交汇处南50米',
-        latitude: 30.706535698,
-        longitude: 104.066926349,
-        show: false,
-        id: 1632486535554
-      },
-      {
-        errMsg: 'chooseLocation:ok',
-        name: '玛塞城收藏品市场',
-        address: '四川省成都市成华区府青东街65号',
-        latitude: 30.683362,
-        longitude: 104.101064,
-        show: false,
-        id: 1632486510972
       }
+      // {
+      //   errMsg: 'chooseLocation:ok',
+      //   name: '五块石电器市场',
+      //   address: '四川省成都市金牛区五块石东一路与五块石路交汇处南50米',
+      //   latitude: 30.706535698,
+      //   longitude: 104.066926349,
+      //   show: false,
+      //   id: 1632486535554
+      // },
+      // {
+      //   errMsg: 'chooseLocation:ok',
+      //   name: '玛塞城收藏品市场',
+      //   address: '四川省成都市成华区府青东街65号',
+      //   latitude: 30.683362,
+      //   longitude: 104.101064,
+      //   show: false,
+      //   id: 1632486510972
+      // }
     ]
   }
   // {

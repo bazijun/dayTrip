@@ -1,30 +1,39 @@
 <template>
   <view>
     <view class="console-box">
-      <view class="flex-se">
-        <u-button :type="mode === 'driving' ? 'warning' : 'primary'" :ripple="true" @click="setOrderly('driving', type)">驾车</u-button>
-        <u-button :type="mode === 'bicycling' ? 'warning' : 'primary'" :ripple="true" @click="setOrderly('bicycling', type)">骑行</u-button>
-        <u-button :type="mode === 'walking' ? 'warning' : 'primary'" :ripple="true" @click="setOrderly('walking', type)">步行</u-button>
-        <u-button :type="mode === 'transit' ? 'warning' : 'primary'" :ripple="true"  @click="setOrderly('transit', type)">公交地铁</u-button>
-      </view>
-      <!-- test -->
-      <view class="control-box">
-      <u-row gutter="20">
-        <u-col span="6">
-          <u-button :hair-line="false" :type="type === 'distance' ? 'success' : 'default'"  :ripple="true"
-          @click="setOrderly(mode, 'distance')" >距离排序
-          <u-badge :offset="[0,0]" type="error" count="推荐"></u-badge>
-          </u-button>
-        </u-col>
-        <u-col span="6">
-          <u-button :hair-line="false" :type="type === 'duration' ? 'success' : 'default'" :ripple="true"
-          @click="setOrderly(mode, 'duration')">耗时排序</u-button>
-        </u-col>
-      </u-row>
+      <u-subsection
+        :list="tabsList"
+        activeColor="#1F82FF"
+        inactiveColor="#fff"
+        bgColor="#1F82FF"
+        :current="tabsCurrent"
+        @change="tabsChange"
+      ></u-subsection>
+      <view class="i-tabs-box">
+        <view
+          :class="modeTabsCurrent === index ? 'i-tabs-item active' : 'i-tabs-item'"
+          v-for="(item, index) in modeTabsList"
+          :key="index"
+          @click="modeTabsChange(index)"
+          >{{ item.name }}</view
+        >
       </view>
     </view>
     <view class="time-line-box">
-      <road-line :mode="mode" :home="home" :target="target"></road-line>
+      <road-line
+        v-show="tabsCurrent"
+        :mode="mode"
+        :home="home"
+        :target="target"
+        :roadMounted="roadMounted"
+      ></road-line>
+      <road-line-map
+        ref="map"
+        :home="home"
+        :target="target"
+        :roadMounted="roadMounted"
+        v-show="!tabsCurrent"
+      ></road-line-map>
     </view>
   </view>
 </template>
@@ -33,14 +42,26 @@
 // import api from '../../util/util'
 import { RoutePlan } from '../../util/routePlan'
 import RoadLine from '../../components/RoadLine/RoadLine.vue'
+import RoadLineMap from '../../components/RoadLineMap/RoadLineMap.vue'
 export default {
   data () {
     return {
       home: {},
       target: [],
       mode: 'driving',
-      type: 'distance', // distance or duration
-      routeLineCache: { // 路线的缓存
+      type: 'distance', // distance | duration
+      roadMounted: false,
+      tabsList: ['地图', '路线列表'],
+      modeTabsList: [
+        { name: '驾车' },
+        { name: '骑行' },
+        { name: '步行' },
+        { name: '公交地铁' }
+      ],
+      tabsCurrent: 0,
+      modeTabsCurrent: 0,
+      routeLineCache: {
+        // 路线的缓存
         driving: {
           distance: [],
           duration: []
@@ -62,19 +83,19 @@ export default {
     }
   },
   onLoad (option) {
-    const { home, target } = JSON.parse(decodeURIComponent(option.list))
-    this.home = home
-    this.target = target
-    // const test = uni.getStorageSync('store')
-    // this.target = test[0].target
-    // this.home = test[0].home
+    // const { home, target } = JSON.parse(decodeURIComponent(option.list))
+    // this.home = home
+    // this.target = target
+    const test = uni.getStorageSync('store')
+    this.target = test[0]?.target
+    this.home = test[0]?.home
     this.RLD = new RoutePlan({
       home: this.home,
       target: this.target,
       mode: this.mode,
       type: this.type
     })
-    this.setOrderly(this.mode, this.type)
+    this.setOrderly(this.mode)
   },
   onUnload () {
     console.log('instance destroy')
@@ -82,7 +103,19 @@ export default {
     this.RLD = null
   },
   methods: {
-    async setOrderly (mode, type) {
+    tabsChange (index) {
+      this.tabsCurrent = index
+    },
+
+    modeTabsChange (index) {
+      this.modeTabsCurrent = index
+      const table = ['driving', 'bicycling', 'walking', 'transit']
+      this.$refs.map.setIncludePoints()
+      this.setOrderly(table[index])
+    },
+
+    async setOrderly (mode, type = this.type) {
+      this.roadMounted = false
       this.mode = mode
       this.type = type
       this.RLD.mode = mode
@@ -90,6 +123,7 @@ export default {
       // 判断是否存在缓存中。缓存中有就不请求了。直接用缓存数据
       if (this.routeLineCache[mode][type].length) {
         this.target = this.routeLineCache[mode][type]
+        this.roadMounted = true
         uni.showToast({
           title: '模式切换成功',
           duration: 1000
@@ -97,14 +131,14 @@ export default {
         return
       }
       uni.showLoading({
-        title: '会有点久，莫急',
+        title: '会有点久，稍等',
         mask: true
       })
       console.time('总耗时')
       this.target = await this.RLD.standardMode().catch(() => {})
       this.routeLineCache[mode][type] = this.target
+      this.roadMounted = true
       console.timeEnd('总耗时')
-      // console.table(this.target)
       uni.hideLoading()
       uni.showToast({
         title: '久等了',
@@ -112,27 +146,61 @@ export default {
       })
     }
   },
-  components: { RoadLine }
+  components: { RoadLine, RoadLineMap }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.u-subsection{
+  border-radius: 0 !important;
+  height: 70rpx !important;
+}
+.u-subsection .u-item .u-item-text {
+  text-align: center !important;
+  font-size: 45rpx !important;
+}
 .console-box {
-  width: 700rpx;
-  height: 150 rpx;
-  margin: 20rpx auto;
-  // border: 1px solid;
+  width: 100%;
+  height:150rpx;
+  margin: 0 auto 10rpx auto;
+  box-shadow: 0px 2px 8px 0px rgba(16, 105, 231, 0.2);
 }
 .time-line-box {
-  width: 680rpx;
+  width: 740rpx;
+  overflow: auto;
+  height: calc(100vh - 165rpx);
   margin: auto;
 }
-.control-box {
-  widows: 700rxp;
-  border-radius: 20rpx;
-  // border: 2rpx solid red;
-  background: #f8e1e1;
-  padding: 15rpx;
-  margin: 20rpx
+.i-tabs-box {
+  width: 100%;
+  text-align: center;
+  background: #fafcfd;
+  display: flex;
+  justify-content: space-around;
+  align-content: center;
+  height: 80rpx;
+  .i-tabs-item {
+    position: relative;
+    width: 20%;
+    color: #818181;
+    padding: 20rpx 0;
+  }
+  .active {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 20%;
+    font-weight: bold;
+    color: #1A1A1A;
+  }
+  .active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 50%;
+    height: 7rpx;
+    border-radius: 25%;
+    background: $theme-color;
+  }
 }
 </style>
