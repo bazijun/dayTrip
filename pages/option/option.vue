@@ -1,6 +1,6 @@
 <template>
   <view>
-    <view v-for="item in list" :key="item.path" class="option-list" @click="goRoute(item.path)">
+    <view v-for="item in list" :key="item.path" class="option-list" @click="goRoute(item)">
       <view class="option-title">
         <u-icon :name="item.icon" :color="item.color" size="40"></u-icon>
         <view class="text-lg text-margin-l-sm" style="line-height: 45rpx">{{item.title}}</view>
@@ -11,6 +11,7 @@
   </view>
 </template>
 <script>
+import api from '../../util/util'
 export default {
   data () {
     return {
@@ -19,7 +20,8 @@ export default {
           color: '#32B16C',
           title: '路线收藏',
           icon: 'star-fill',
-          path: '../collect/collect'
+          path: '../collect/collect',
+          needAuth: true
         },
         {
           color: '#FFB30E',
@@ -45,9 +47,14 @@ export default {
     }
   },
   methods: {
-    goRoute (path) {
+    goRoute (item) {
+      const { locationAuth } = this.$store.state
+      if (item?.needAuth && !locationAuth) {
+        api.mpOptionLocation(getApp().getHome)
+        return
+      }
       uni.navigateTo({
-        url: path
+        url: item.path
       })
     }
   }

@@ -1,14 +1,18 @@
 <template>
   <view ref="indexCom">
     <view class="home-box" @click="outSet">
-      <view v-if="!home.errMsg">
+      <view class="home-on-box" v-if="homeLoading">
+        <u-loading color="#1F82FF" size="100" :show="homeLoading"></u-loading>
+        <image class="home-loading-img" src="/static/icon/road-click.png" mode="" />
+      </view>
+      <view v-else-if="JSON.stringify(home) === '{}'">
         <image class="theme-img" src="/static/img/home.png" />
         <view class="title-text">点击选择出发地点</view>
       </view>
       <view class="home-on-box" v-else>
         <image class="theme-img" src="/static/img/home-on.png" />
         <view class="width-sm text-center">
-          <view class="t-name text-line-one">{{ home.name || "Home" }}</view>
+          <view class="t-name text-line-one">{{ home.name || "我的位置" }}</view>
           <view class="t-address text-line-two" v-if="home.address"
             ><text class="text-l-bold">详细地址:</text>{{ home.address }}</view
           >
@@ -138,6 +142,7 @@ export default {
       count: 5,
       value: 4,
       home: {},
+      homeLoading: false,
       list: [],
       show: false,
       storeName: '',
@@ -196,6 +201,16 @@ export default {
   },
 
   onLoad () {
+    uni.$once('initHomeLoading', () => {
+      this.homeLoading = true
+      console.log('loading开始')
+    })
+    uni.$once('initHomeLocation', (data) => {
+      this.home = data
+      this.homeLoading = false
+      console.log('loading结束')
+      // console.log('监听到了', data)
+    })
     this.getList()
   },
   methods: {
@@ -222,6 +237,9 @@ export default {
         this.home = home
         this.list = target
         this.storeId = id
+      } else {
+        //
+
       }
     },
 
@@ -488,6 +506,10 @@ export default {
     justify-content: space-evenly;
     align-items: center;
     text-align: center;
+    .home-loading-img{
+      position: relative;
+      z-index: 0,
+    }
   }
 }
 

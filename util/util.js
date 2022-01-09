@@ -25,6 +25,7 @@ export default {
   },
 
   mpOptionLocation (callback) { // 拒绝第一次系统授权后，必须用户手动开启位置授权了。
+    console.log('mpOptionLocation-被调用乐')
     uni.getSetting({
       success: function (res) {
         const status = res.authSetting

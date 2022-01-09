@@ -10,7 +10,7 @@ const qqMap = new QQMapWX({
  2. 总距离和耗时，每点之间耗时距离。
  3. ✅ 修改滑动图标，使其更加具有用户引导性
  4. ui改动， 以及动画
- 5. 自动定位起点
+ 5. 自动定位起点(√)，初进入获取当前定位loading
 =BUG
 
 =优化
@@ -164,16 +164,16 @@ export const location2Address = (location) => {
     qqMap.reverseGeocoder({
       location: location,
       success: res => {
-        const { ad_info, address, formatted_addresses } = res.result
+        const { address, location, formatted_addresses, address_reference } = res.result
         const info = {
           address: address,
-          name: formatted_addresses.recommend,
-          latitude: ad_info.location.lat,
-          longitude: ad_info.location.lng,
+          name: address_reference?.landmark_l2?.title || address_reference?.landmark_l1?.title || formatted_addresses.recommend,
+          latitude: location.lat,
+          longitude: location.lng,
           id: new Date().getTime()
         }
-        console.log(res)
         resolve(info)
+        // console.log(res.result, '地址全面')
       },
       fail: err => reject(err)
     })

@@ -1,31 +1,33 @@
 <script>
 import api from './util/util.js'
 import { location2Address } from './util/routePlan.js'
+import $store from './store/index.js'
 export default {
-
   onLaunch () {
     api.mpLocation(this.getHome)
     uni.showShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
     })
-    // console.log('App Launch')
-  },
-
-  globalData: {
-    homeInfo: { a: 1 }
   },
 
   methods: {
-    getHome () { // 获取用户当前位置
-      uni.getLocation({ type: 'gcj02' }).then(async (l) => {
-        console.log(l[1], 'getLocation')
-        const app = await location2Address({
-          latitude: l[1].latitude,
-          longitude: l[1].longitude
-        }).catch(err => console.log(err))
-        console.log('当前结果', app)
-      })
+    // 首次进入应用，获取用户当前位置
+    getHome () {
+      uni.$emit('initHomeLoading')
+      uni
+        .getLocation({ type: 'gcj02' })
+        .then(async (l) => {
+          const payload = await location2Address({
+            latitude: l[1].latitude,
+            longitude: l[1].longitude
+          }).catch((err) => console.log(err))
+          uni.$emit('initHomeLocation', {
+            errMsg: '定位初始化成功',
+            ...payload
+          })
+          $store.commit('SET_LOCATION_AUTH')
+        })
     }
   }
 }

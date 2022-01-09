@@ -7,7 +7,8 @@ const store = new Vuex.Store({
   state: {
     vip: false,
     routeStore: routeStore,
-    currentRoute: {}
+    currentRoute: {},
+    locationAuth: false
   },
   getters: {
   },
@@ -15,6 +16,9 @@ const store = new Vuex.Store({
     SET_VIP (state) {
       state.vip = true
       uni.setStorageSync('vip', 'yes')
+    },
+    SET_LOCATION_AUTH (state) {
+      state.locationAuth = true
     },
     ADD_ROUTE_STORE (state, payload) {
       let arr = []
