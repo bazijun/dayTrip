@@ -22,6 +22,7 @@ const qqMap = new QQMapWX({
 =优化
     1.贪婪算法，可以强制切换行程方式，强制取消订阅
     2.公交如何距离太近调用计算 相聚位置接口算距离。或者推荐 走路 或 骑行
+    3. ⛔ 驾车路线规划时，有路线相聚小于500米。就关闭公交地铁选择框。
 =预计
     1.更详细的地图选点
 
@@ -48,7 +49,11 @@ export class RoutePlan {
         from: `${start.latitude},${start.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
-      const { route, polyline } = await this.diffDistance(path).catch(() => { })
+      const { route, polyline } = await this.diffDistance(path).catch(err => {
+        console.log(err)
+        this.targetSequence = [{ message: '距离太短' }]
+        throw new Error('距离太短')
+      })
       routeLine = [...routeLine, { ...v, route, polyline }]
       console.log(`${route} ===> ${this.type === 'distance' ? '距离' : '耗时'} ===> ${v.name}`)
     }
@@ -97,6 +102,7 @@ export class RoutePlan {
           from: path.from,
           to: path.to,
           success: res => {
+            console.log(res.result, 'chengg1')
             // 解压路线
             const polyline = []
             // 公交路线分段式；
