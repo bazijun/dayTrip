@@ -49,11 +49,7 @@ export class RoutePlan {
         from: `${start.latitude},${start.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
-      const { route, polyline } = await this.diffDistance(path).catch(err => {
-        console.log(err)
-        this.targetSequence = [{ message: '距离太短' }]
-        throw new Error('距离太短')
-      })
+      const { route, polyline } = await this.diffDistance(path).catch(() => {})
       routeLine = [...routeLine, { ...v, route, polyline }]
       console.log(`${route} ===> ${this.type === 'distance' ? '距离' : '耗时'} ===> ${v.name}`)
     }

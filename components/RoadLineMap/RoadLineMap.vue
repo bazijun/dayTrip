@@ -156,7 +156,7 @@ export default {
       if (!this.roadMounted) return []
       return this.target?.map((v) => {
         return {
-          points: v.polyline,
+          points: v.polyline?.length <= 1 ? [] : v.polyline,
           width: 10,
           arrowLine: true,
           borderWidth: 1,
