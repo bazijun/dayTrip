@@ -145,7 +145,6 @@ export default {
           }
         }
       })
-      console.log({ getterMarkers })
       if (this.markerCallout) return getterMarkers
       return getterMarkers.map((v) => {
         const { callout, ...payload } = v

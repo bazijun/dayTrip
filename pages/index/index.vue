@@ -69,7 +69,7 @@
         >
           <u-icon name="plus" color="#1F82FF" size="85"></u-icon>
         </u-button>
-        <view style="margin: 20rpx 0" v-for="item in list" :key="item.id">
+        <view style="margin: 20rpx 0" v-for="(item, index) in list" :key="item.id">
           <u-swipe-action
             :show="item.show"
             :index="item.id"
@@ -78,7 +78,7 @@
             @open="open"
             :options="options"
           >
-            <view class="target-list">
+            <view class="target-list" @click="targetEdit(index)">
               <view>
                 <view class="t-name width-lg text-line-one">{{
                   item.name || item.address
@@ -190,12 +190,6 @@ export default {
         }
       ],
       options: [
-        {
-          text: '编辑',
-          style: {
-            backgroundColor: '#409EFF'
-          }
-        },
         {
           text: '删除',
           style: {
@@ -377,13 +371,9 @@ export default {
       }
     },
 
-    swipeClick (id, index1) {
+    swipeClick (id) {
       const index = this.list.findIndex((v) => v.id === id)
-      if (index1 === 1) {
-        this.list.splice(index, 1)
-      } else {
-        this.targetEdit(index)
-      }
+      this.list.splice(index, 1)
     },
 
     open (id) {
@@ -401,15 +391,6 @@ export default {
       this.addButtonLoading = true
       const vip = uni.getStorageSync('vip')
       if (this.list.length < 5 || vip) {
-        // if (this.list.length === 10) {
-        //   uni.showToast({
-        //     title: '已达目标上限，后续也许会升级~',
-        //     icon: 'none',
-        //     duration: 1500
-        //   })
-        //   this.addButtonLoading = false
-        //   return
-        // }
         uni
           .chooseLocation()
           .then((res) => {
@@ -423,6 +404,22 @@ export default {
               ...res[1],
               show: false,
               id: new Date().getTime()
+            }
+            if (this.home.address === targetList.address) {
+              uni.showToast({
+                title: '起点和目的地不能相同！',
+                icon: 'none',
+                duration: 1500
+              })
+              return
+            }
+            if (this.list.some(v => v.address === targetList.address)) {
+              uni.showToast({
+                title: '不能添加已有目的地！',
+                icon: 'none',
+                duration: 1500
+              })
+              return
             }
             this.list = [targetList, ...this.list]
           })

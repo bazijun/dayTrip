@@ -5,6 +5,10 @@ const qqMap = new QQMapWX({
 })
 
 /** TODO --
+#使用建议
+  1.不推荐 目标地之间距离太近，至少因当大于500米。若目标之间距离小于500米，请不要使用公交地铁进行行程规划了。（后续会进行优化）
+  2.（待商榷）无论何种出行方式，都推荐使用[驾车]模式进行路线规划，然后通过点击[坐标点]再自由选择出行方式。
+
 =新增
  1. ✅（以更好的方式解决了）只按距离排序后，每个点与点之间才进行交通工具选择；或根据所隔 距离智能推荐。
  2. 总距离和耗时，每点之间耗时距离。
@@ -97,6 +101,7 @@ export class RoutePlan {
             const polyline = []
             // 公交路线分段式；
             if (path.mode === 'transit') {
+              debugger
               const ret = res.result?.routes[0]
               const count = ret.steps?.length
               const coors = []
@@ -112,7 +117,7 @@ export class RoutePlan {
               // 坐标解压（返回的点串坐标，通过前向差分进行压缩）
               const kr = 1000000
               for (let i = 0; i < coors.length; i++) {
-                for (let j = 2; j < coors[i].length; j++) {
+                for (let j = 2; j < coors[i]?.length; j++) {
                   coors[i][j] = Number(coors[i][j - 2]) + Number(coors[i][j]) / kr
                 }
               }
@@ -126,6 +131,7 @@ export class RoutePlan {
               for (let i = 0; i < coorsArr.length; i += 2) {
                 polyline.push({ latitude: coorsArr[i], longitude: coorsArr[i + 1] })
               }
+              console.log(polyline, '路线')
             } else {
               // 其余路线都是曲线方式；
               const coors = res.result.routes[0].polyline

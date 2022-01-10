@@ -21,12 +21,6 @@ export default {
     return {
       options: [
         {
-          text: '启用',
-          style: {
-            backgroundColor: '#409EFF'
-          }
-        },
-        {
           text: '删除',
           style: {
             backgroundColor: '#F56C6C'
@@ -50,21 +44,18 @@ export default {
         url: '../index/index'
       })
     },
-    swipeClick (id, index1) {
+
+    swipeClick (id) {
       const index = this.routeStore.findIndex(v => v.id === id)
-      if (index1 === 1) {
-        if (this.routeStore[index].id === 1632488015398) {
-          uni.showToast({
-            title: '这个不能删！ﾍ(;´Д｀ﾍ) ',
-            icon: 'none',
-            duration: 1500
-          })
-          this.routeStore[index].show = false
-        } else {
-          this.$store.commit('DELETE_ROUTE_STORE', index)
-        }
+      if (this.routeStore[index].id === 1632488015398) {
+        uni.showToast({
+          title: '这个不能删！ﾍ(;´Д｀ﾍ) ',
+          icon: 'none',
+          duration: 1500
+        })
+        this.routeStore[index].show = false
       } else {
-        this.goRoute(this.routeStore[index])
+        this.$store.commit('DELETE_ROUTE_STORE', index)
       }
     },
     open (id) {
