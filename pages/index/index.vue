@@ -2,8 +2,14 @@
   <view ref="indexCom">
     <view class="home-box" @click="outSet">
       <view class="home-on-box" v-if="homeLoading">
-        <u-loading color="#1F82FF" size="100" :show="homeLoading"></u-loading>
-        <image class="home-loading-img" src="/static/icon/road-click.png" mode="" />
+        <u-loading
+          color="#1F82FF"
+          size="120"
+          text="定位获取中"
+          :show="homeLoading"
+        >
+        </u-loading>
+        <image class="home-loading-img" src="/static/icon/road-click.png" />
       </view>
       <view v-else-if="JSON.stringify(home) === '{}'">
         <image class="theme-img" src="/static/img/home.png" />
@@ -12,7 +18,9 @@
       <view class="home-on-box" v-else>
         <image class="theme-img" src="/static/img/home-on.png" />
         <view class="width-sm text-center">
-          <view class="t-name text-line-one">{{ home.name || "我的位置" }}</view>
+          <view class="t-name text-line-one">{{
+            home.name || "我的位置"
+          }}</view>
           <view class="t-address text-line-two" v-if="home.address"
             ><text class="text-l-bold">详细地址:</text>{{ home.address }}</view
           >
@@ -25,49 +33,43 @@
         </view>
       </view>
     </view>
-    <!-- 新建路线 -->
-    <u-button
+    <!-- 新建路线: 有点鸡肋，暂时取消 -->
+    <!-- <u-button
       @click="newRoute"
       v-if="storeId"
       shape="circle"
       :custom-style="btnCustomStyle"
-      type="info"
+      type="primary"
       :ripple="true"
     >
-      <u-icon
-        name="plus"
-        color="#fff"
-        size="55"
-        style="padding-right: 15rpx"
-      ></u-icon>
-      新建空白路线页
-    </u-button>
+      <u-icon name="plus" color="#fff" size="55"></u-icon>
+    </u-button> -->
     <view class="target-box">
       <view class="target-head">
         <view class="flex">
-          <u-icon name="map-fill" color="#043963" size="50"></u-icon>
-          <view class="title-text" style="color: #043963">目的地-列表</view>
+          <u-icon name="map-fill" color="#fff" size="50"></u-icon>
+          <view class="title-text" style="color: #fff">目的地-列表</view>
           <view style="width: 10rpx"></view>
-          <u-icon
-            name="reload"
-            color="#fff"
-            size="40"
-            @click="reloadTargetList"
-          ></u-icon>
         </view>
-        <u-icon
-          name="plus-circle-fill"
-          color="#fff"
-          size="100"
-          @click="targetAdd"
-        ></u-icon>
+        <u-button
+          @click="reloadTargetList"
+          shape="circle"
+          :custom-style="btnCustomStyle"
+          type="primary"
+          :ripple="true"
+        >
+          <u-icon name="reload" color="#fff" size="70"></u-icon>
+        </u-button>
       </view>
       <view class="target-content">
-        <view
-          style="margin: 20rpx 0"
-          v-for="(item, index) in list"
-          :key="item.id"
+        <u-button
+          v-if="list.length !== 10"
+          :custom-style="btnBlockCustomStyle"
+          @click="targetAdd"
         >
+          <u-icon name="plus" color="#1F82FF" size="85"></u-icon>
+        </u-button>
+        <view style="margin: 20rpx 0" v-for="item in list" :key="item.id">
           <u-swipe-action
             :show="item.show"
             :index="item.id"
@@ -79,7 +81,7 @@
             <view class="target-list">
               <view>
                 <view class="t-name width-lg text-line-one">{{
-                  item.name || "目标-" + index
+                  item.name || item.address
                 }}</view>
                 <view
                   class="t-address width-lg text-line-one"
@@ -143,18 +145,28 @@ export default {
       value: 4,
       home: {},
       homeLoading: false,
+      homeButtonLoading: false, // 用于阻止 mpOptionLocation 被多次触发
+      addButtonLoading: false,
       list: [],
       show: false,
       storeName: '',
       storeId: '',
       isfocus: false,
       btnCustomStyle: {
-        width: '700rpx',
-        height: '80rpx',
-        backgroundColor: '#19BE6B',
+        width: '80rpx',
+        height: '80rpx'
+      },
+      btnBlockCustomStyle: {
+        margin: '20rpx 0',
+        boxSizing: 'border-box',
+        width: '100%',
+        height: '100rpx',
+        border: '5rpx dotted #1F82FF',
         color: '#fff',
-        margin: '10rpx auto 10rpx auto',
-        fontSize: '35rpx'
+        borderRadius: '10rpx',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
       },
       tabbar: [
         {
@@ -214,7 +226,6 @@ export default {
     this.getList()
   },
   methods: {
-
     newRoute () {
       uni.showModal({
         title: '提示',
@@ -239,7 +250,6 @@ export default {
         this.storeId = id
       } else {
         //
-
       }
     },
 
@@ -331,12 +341,13 @@ export default {
     },
 
     outSet () {
-      // const loaction = api.mpLocation()
-      // if (loaction) return
+      if (this.homeButtonLoading) return
+      this.homeButtonLoading = true
       if (!this.home.name) {
         uni
           .chooseLocation()
           .then((res) => {
+            this.homeButtonLoading = false
             if (!res[1]?.errMsg) {
               api.mpOptionLocation(getApp().getHome)
               return
@@ -344,22 +355,26 @@ export default {
             this.home = res[1]
           })
           .catch(() => {
+            this.homeButtonLoading = false
+            api.mpOptionLocation(getApp().getHome)
+          })
+      } else {
+        uni
+          .chooseLocation({
+            latitude: this.home.latitude,
+            longitude: this.home.longitude
+          })
+          .then((res) => {
+            this.homeButtonLoading = false
+            this.closeSwipe()
+            if (!res[1]?.errMsg) return
+            this.home = res[1]
+          })
+          .catch(() => {
+            this.homeButtonLoading = false
             api.mpOptionLocation(getApp().getHome)
           })
       }
-      uni
-        .chooseLocation({
-          latitude: this.home.latitude,
-          longitude: this.home.longitude
-        })
-        .then((res) => {
-          this.closeSwipe()
-          if (!res[1]?.errMsg) return
-          this.home = res[1]
-        })
-        .catch(() => {
-          api.mpOptionLocation(getApp().getHome)
-        })
     },
 
     swipeClick (id, index1) {
@@ -382,19 +397,23 @@ export default {
     },
 
     targetAdd () {
+      if (this.addButtonLoading) return
+      this.addButtonLoading = true
       const vip = uni.getStorageSync('vip')
       if (this.list.length < 5 || vip) {
-        if (this.list.length === 10) {
-          uni.showToast({
-            title: '已达目标上限，后续也许会升级~',
-            icon: 'none',
-            duration: 1500
-          })
-          return
-        }
+        // if (this.list.length === 10) {
+        //   uni.showToast({
+        //     title: '已达目标上限，后续也许会升级~',
+        //     icon: 'none',
+        //     duration: 1500
+        //   })
+        //   this.addButtonLoading = false
+        //   return
+        // }
         uni
           .chooseLocation()
           .then((res) => {
+            this.addButtonLoading = false
             this.closeSwipe()
             if (!res[1]?.errMsg) {
               api.mpOptionLocation(getApp().getHome)
@@ -408,9 +427,11 @@ export default {
             this.list = [targetList, ...this.list]
           })
           .catch(() => {
+            this.addButtonLoading = false
             api.mpOptionLocation(getApp().getHome)
           })
       } else {
+        this.addButtonLoading = false
         uni.showModal({
           title: '提示',
           content:
@@ -503,12 +524,16 @@ export default {
     background: #fff;
     border-radius: 20rpx;
     display: flex;
+    position: relative;
     justify-content: space-evenly;
     align-items: center;
     text-align: center;
-    .home-loading-img{
-      position: relative;
-      z-index: 0,
+    .home-loading-img {
+      position: absolute;
+      width: 80rpx;
+      height: 80rpx;
+      z-index: 99;
+      margin: auto;
     }
   }
 }
@@ -523,6 +548,9 @@ export default {
   box-shadow: 0px 2px 8px 0px rgba(16, 105, 231, 0.2);
   .target-head {
     height: 110rpx;
+    position: sticky;
+    top: 0;
+    z-index: 99;
     width: 100%;
     background-image: url("/static/img/blue-column.png");
     background-size: 100% 100%;
@@ -541,6 +569,17 @@ export default {
   .target-content {
     width: 690rpx;
     margin: auto;
+    .target-add {
+      margin: 20rpx 0;
+      box-sizing: border-box;
+      width: 100%;
+      height: 100rpx;
+      border: 5rpx dotted $theme-color;
+      border-radius: 10rpx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     .target-list {
       box-sizing: border-box;
       background-color: $theme-light-color;

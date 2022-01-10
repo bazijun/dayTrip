@@ -9,6 +9,7 @@
   },
   "main": "main.js",
   "dependencies": {
+    "lodash": "^4.17.21",
     "uview-ui": "^1.8.4"
   },
   "devDependencies": {

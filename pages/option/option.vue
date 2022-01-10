@@ -4,6 +4,7 @@
       <view class="option-title">
         <u-icon :name="item.icon" :color="item.color" size="40"></u-icon>
         <view class="text-lg text-margin-l-sm" style="line-height: 45rpx">{{item.title}}</view>
+        <u-badge v-if="item.badge" absolute is-dot type="error" :offset="[-5,-5]"></u-badge>
       </view>
       <u-icon name="arrow-right" color="#ADAAAA" size="45"></u-icon>
     </view>
@@ -22,6 +23,13 @@ export default {
           icon: 'star-fill',
           path: '../collect/collect',
           needAuth: true
+        },
+        {
+          color: '#1F82FF',
+          title: '版本说明',
+          icon: 'file-text-fill',
+          path: '../document/document',
+          badge: true
         },
         {
           color: '#FFB30E',
@@ -63,6 +71,7 @@ export default {
 
 <style lang="scss" scoped>
 .option-list {
+  position: relative;
   width: 710rpx;
   height: 100rpx;
   box-shadow: 0rpx 2rpx 8rpx 0rpx rgba(16, 105, 231, 0.2);

@@ -6,6 +6,9 @@ $theme-bg: #F8F8F8;
 
 $theme-warning:#f0ad4e;
 $theme-success:#67C23A;
+
+/* 强改 */
+
 /* 布局 */
 .flex {
     display: flex;
@@ -29,6 +32,7 @@ $theme-success:#67C23A;
     display: flex;
     justify-content: space-evenly;
 }
+
 /* 微调 */
 .width-xs {
     width: 400rpx;
@@ -51,6 +55,7 @@ $theme-success:#67C23A;
 .text-margin-l-sm{
     margin-left: 15rpx;
 }
+
 /* 边距 */
 .i-padding-sm{
     padding: 10rpx
@@ -61,6 +66,7 @@ $theme-success:#67C23A;
 .i-padding-lg{
     padding: 30rpx
 }
+
 /* 字体 */
 .text-lg-b {
     font-size: 32rpx;

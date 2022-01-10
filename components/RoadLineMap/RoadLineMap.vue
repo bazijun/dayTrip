@@ -110,17 +110,22 @@ export default {
       const markers = [this.home, ...this.target]
       const getterMarkers = markers?.map((v, i) => {
         const index = i ? (i < markers.length - 1 ? i : 'end') : 'start'
+        // const zIndex = 50 - i
         return {
           id: i,
           name: v.name,
           latitude: v.latitude,
           longitude: v.longitude,
+          iconPath: `/static/icon/map/${index}.png`,
+          width: ['end', 'start'].includes(index) ? 30 : 20,
+          height: ['end', 'start'].includes(index) ? 30 : 20,
+          // zIndex: index === 'start' ? 99 : index === 'end' ? 98 : zIndex, // uniApp-map暂无 zIndex属性
           callout: {
             display: 'ALWAYS',
             content:
               v.name?.length > 10 ? v.name.substring(0, 10) + '...' : v.name,
             borderRadius: 10,
-            fontSize: 15,
+            fontSize: 12,
             borderColor: '#fff',
             borderWidth: 1,
             bgColor:
@@ -136,11 +141,8 @@ export default {
               : this.satellite
                 ? '#1A1A1A'
                 : '#fff',
-            padding: 8
-          },
-          iconPath: `/static/icon/map/${index}.png`,
-          width: ['end', 'start'].includes(index) ? 35 : 25,
-          height: ['end', 'start'].includes(index) ? 35 : 25
+            padding: 5
+          }
         }
       })
       console.log({ getterMarkers })

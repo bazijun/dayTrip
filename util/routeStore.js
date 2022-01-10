@@ -38,25 +38,25 @@ export const routeStore = [
         longitude: 104.06592406592,
         show: false,
         id: 1632487639000
+      },
+      {
+        errMsg: 'chooseLocation:ok',
+        name: '五块石电器市场',
+        address: '四川省成都市金牛区五块石东一路与五块石路交汇处南50米',
+        latitude: 30.706535698,
+        longitude: 104.066926349,
+        show: false,
+        id: 1632486535554
+      },
+      {
+        errMsg: 'chooseLocation:ok',
+        name: '玛塞城收藏品市场',
+        address: '四川省成都市成华区府青东街65号',
+        latitude: 30.683362,
+        longitude: 104.101064,
+        show: false,
+        id: 1632486510972
       }
-      // {
-      //   errMsg: 'chooseLocation:ok',
-      //   name: '五块石电器市场',
-      //   address: '四川省成都市金牛区五块石东一路与五块石路交汇处南50米',
-      //   latitude: 30.706535698,
-      //   longitude: 104.066926349,
-      //   show: false,
-      //   id: 1632486535554
-      // },
-      // {
-      //   errMsg: 'chooseLocation:ok',
-      //   name: '玛塞城收藏品市场',
-      //   address: '四川省成都市成华区府青东街65号',
-      //   latitude: 30.683362,
-      //   longitude: 104.101064,
-      //   show: false,
-      //   id: 1632486510972
-      // }
     ]
   }
   // {

@@ -11,12 +11,15 @@ const qqMap = new QQMapWX({
  3. ✅ 修改滑动图标，使其更加具有用户引导性
  4. ui改动， 以及动画
  5. 自动定位起点(√)，初进入获取当前定位loading
+=移除
+ 1. ⛔ 取消 新建路线功能
 =BUG
 
 =优化
     1.贪婪算法，可以强制切换行程方式，强制取消订阅
     2.公交如何距离太近调用计算 相聚位置接口算距离。或者推荐 走路 或 骑行
 =预计
+    1.更详细的地图选点
 
 -- TODO **/
 
@@ -154,7 +157,7 @@ export const routePlanPluginView = (endPoint, startPoint) => {
   const referer = 'dayTrip'
   const start = startPoint ? `&startPoint=${JSON.stringify(startPoint)}` : ''
   uni.navigateTo({
-    url: 'plugin://routePlan/index?key=' + key + '&referer=' + referer + '&endPoint=' + JSON.stringify(endPoint) + start
+    url: 'plugin://routePlan/index?key=' + key + '&referer=' + referer + '&endPoint=' + JSON.stringify(endPoint) + '&navigation=1' + start
   })
 }
 

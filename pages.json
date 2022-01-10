@@ -33,6 +33,13 @@
 			}
 		},
 		{
+			"path": "pages/document/document",
+			"style": {
+				"navigationBarTitleText": "版本说明",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
 			"path": "pages/about/about",
 			"style": {
 				"navigationBarTitleText": "关于",
