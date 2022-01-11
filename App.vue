@@ -26,7 +26,7 @@ export default {
               uni.showModal({
                 title: '更新提示',
                 content: '新版本已经准备，是否重启应用？',
-                showCancel: false, // 隐藏取消按钮
+                showCancel: false,
                 confirmText: '确定更新', // 只保留确定更新按钮
                 success: function (ret) {
                   if (ret.confirm) {
@@ -39,7 +39,8 @@ export default {
             // 新版本下载失败
               uni.showModal({
                 title: '更新提示',
-                content: '新版本下载失败，请重启微信或删除当前小程序，重新搜索打开。'
+                content: '新版本下载失败，请重启微信或检查网络。',
+                showCancel: false
               })
             })
           }
@@ -49,7 +50,7 @@ export default {
         uni.showModal({
           title: '提示',
           content:
-          '当前微信版本过低，可能无法使用最新功能，推荐更新微信版本！'
+          '当前微信版本过低，可能无法使用最新功能，推荐更新微信！'
         })
       }
     },

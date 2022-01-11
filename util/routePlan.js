@@ -23,8 +23,10 @@ const qqMap = new QQMapWX({
     1.贪婪算法，可以强制切换行程方式，强制取消订阅
     2.公交如何距离太近调用计算 相聚位置接口算距离。或者推荐 走路 或 骑行
     3. ⛔ 驾车路线规划时，有路线相聚小于500米。就关闭公交地铁选择框。
+
 =预计
-    1.更详细的地图选点
+    1.更详细的地图选点,
+    2.对标点太近时，进行深度优化，太近时，调用距离计算接口，直接排序。或者再进行路线规划前就进行拦截。
 
 -- TODO **/
 
@@ -49,8 +51,12 @@ export class RoutePlan {
         from: `${start.latitude},${start.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
-      const { route, polyline } = await this.diffDistance(path).catch(() => {})
-      routeLine = [...routeLine, { ...v, route, polyline }]
+      const { route, polyline, error } = await this.diffDistance(path).catch(() => {})
+      if (error) {
+        routeLine = [...routeLine, { ...v, error }]
+      } else {
+        routeLine = [...routeLine, { ...v, route, polyline }]
+      }
       console.log(`${route} ===> ${this.type === 'distance' ? '距离' : '耗时'} ===> ${v.name}`)
     }
     const sortTarget = routeLine.sort((a, b) => a.route - b.route) // 排序后的 target 数组
@@ -65,6 +71,7 @@ export class RoutePlan {
       this.targetSequence = []
       this.index = 1
       console.log('=====结束=====')
+      console.log(targetSequence, '结果')
       return targetSequence
     }
   }
@@ -103,7 +110,6 @@ export class RoutePlan {
             const polyline = []
             // 公交路线分段式；
             if (path.mode === 'transit') {
-              debugger
               const ret = res.result?.routes[0]
               const count = ret.steps?.length
               const coors = []
@@ -151,7 +157,12 @@ export class RoutePlan {
               route: res.result.routes[0][this.type], polyline
             })
           },
-          fail: err => reject(err)
+          fail: err => {
+            const error = { ...err }
+            resolve({ error })
+            console.log(err, '路线规划错误')
+            reject(err)
+          }
         })
       }, 201)
     })

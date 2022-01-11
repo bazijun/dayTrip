@@ -509,7 +509,7 @@ export default {
   width: 710rpx;
   margin: 20rpx auto;
   position: relative;
-  background-image: url("/static/img/origin-home.png");
+  background-image: url("/static/img/blue-home.png");
   background-size: 100% 100%;
   text-align: center;
   border-radius: 20rpx;

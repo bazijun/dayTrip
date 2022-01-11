@@ -7,7 +7,7 @@
           <!-- 不免责声明: 不精准我全责。<br/> -->
           欢迎提需求与吐槽：ヾ(≧▽≦*)o
           <view class="margin-top-lg"></view>
-          Wx：bazijunsd qq：1324022569
+          WX：bazijunsd<br/>QQ：1324022569
         </div>
   </div>
 </template>
