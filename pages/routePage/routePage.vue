@@ -134,11 +134,11 @@ export default {
         title: '会有点久，稍等',
         mask: true
       })
-      console.time('总耗时')
+      console.time('🕓 总耗时')
       this.target = await this.RLD.standardMode().catch(() => {})
       this.routeLineCache[mode][type] = this.target
       this.roadMounted = true
-      console.timeEnd('总耗时')
+      console.timeEnd('🕓 总耗时')
       uni.hideLoading()
       uni.showToast({
         title: '久等了',

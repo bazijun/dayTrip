@@ -49,7 +49,7 @@ export class RoutePlan {
 
   // 标准模式 <迪杰斯特拉算法(Dijkstra)> => 递归遍历 运算时间为 简单模式的targets.length倍
   async standardMode (start = this.home, targets = this.target) {
-    console.log(`\n================ ${this.index}   ${this.mode}  《==》  ${this.type}   ================`)
+    console.log(`⭐ 第${this.index}轮； 起点 ➡ ${start.name}`)
     let routeLine = []
     this.index++
     for (const v of targets) {
@@ -58,13 +58,14 @@ export class RoutePlan {
         from: `${start.latitude},${start.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
+      const distance = this.distance(path)
       const { route, polyline, error } = await this.diffDistance(path).catch(() => {})
       if (error) {
         routeLine = [...routeLine, { ...v, error }]
       } else {
         routeLine = [...routeLine, { ...v, route, polyline }]
       }
-      console.log(`${route} ===> ${this.type === 'distance' ? '距离' : '耗时'} ===> ${v.name}`)
+      console.log(`🚀 ${start.name} ➡ ${v.name}: 云${this.type === 'distance' ? '距离' : '耗时'} ➡ ${route}m； 本地${this.type === 'distance' ? '距离' : '耗时'} ➡ ${distance}m`)
     }
     const sortTarget = routeLine.sort((a, b) => a.route - b.route) // 排序后的 target 数组
     const mark = sortTarget[0] // 标记点对象 (以排序成功的第一位目标点)
@@ -77,8 +78,7 @@ export class RoutePlan {
       const targetSequence = this.targetSequence
       this.targetSequence = []
       this.index = 1
-      console.log('=====结束=====')
-      console.log(targetSequence, '结果')
+      console.log('✅完成✅', targetSequence)
       return targetSequence
     }
   }
@@ -86,7 +86,7 @@ export class RoutePlan {
   // 简单模式 => 只是单纯比较 起点和各目标点的耗时(距离)，然后排序
   async simpleMode () {
     let routeLine = []
-    console.log(`\n================   ${this.mode}  <==>  ${this.type}   ==============`)
+    console.log(`\n 🔵 == ${this.mode} == ${this.type}`)
     for (const v of this.target) {
       const path = {
         mode: this.mode,
@@ -95,14 +95,13 @@ export class RoutePlan {
       }
       const { route, polyline } = await this.diffDistance(path).catch(() => { })
       routeLine = [...routeLine, { ...v, route, polyline }]
-      console.log(`${route}===>${this.type === 'distance' ? '距离' : '耗时'}===>${v.name}`)
+      console.log(`🚀 ${route}=>${this.type === 'distance' ? '距离' : '耗时'}=>${v.name}`)
     }
     const simpleLine = routeLine.sort((a, b) => a.route - b.route)
-    // console.table(simpleLine)
     return simpleLine
   }
 
-  // 两个位置的距离
+  // 两个位置的距离 (云计算)
   diffDistance (path) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -112,7 +111,6 @@ export class RoutePlan {
           from: path.from,
           to: path.to,
           success: res => {
-            console.log(res.result, 'chengg1')
             // 解压路线
             const polyline = []
             // 公交路线分段式；
@@ -146,7 +144,6 @@ export class RoutePlan {
               for (let i = 0; i < coorsArr.length; i += 2) {
                 polyline.push({ latitude: coorsArr[i], longitude: coorsArr[i + 1] })
               }
-              console.log(polyline, '路线')
             } else {
               // 其余路线都是曲线方式；
               const coors = res.result.routes[0].polyline
@@ -167,12 +164,27 @@ export class RoutePlan {
           fail: err => {
             const error = { ...err }
             resolve({ error })
-            console.log(err, '路线规划错误')
+            console.log('⭕ 路线规划错误', err)
             reject(err)
           }
         })
       }, 201)
     })
+  }
+
+  // 两个位置的距离 (本地计算)
+  distance (path) {
+    const [la1, lo1] = path?.from?.split(',')
+    const [la2, lo2] = path?.to?.split(',')
+    const La1 = la1 * Math.PI / 180.0
+    const La2 = la2 * Math.PI / 180.0
+    const La3 = La1 - La2
+    const Lb3 = lo1 * Math.PI / 180.0 - lo2 * Math.PI / 180.0
+    let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(La3 / 2), 2) + Math.cos(La1) * Math.cos(La2) * Math.pow(Math.sin(Lb3 / 2), 2)))
+    s = s * 6378.137
+    s = Math.round(s * 10000) / 10000
+    s = s.toFixed(2)
+    return s * 1000
   }
 }
 
@@ -202,7 +214,6 @@ export const location2Address = (location) => {
           id: new Date().getTime()
         }
         resolve(info)
-        // console.log(res.result, '地址全面')
       },
       fail: err => reject(err)
     })

@@ -209,13 +209,10 @@ export default {
   onLoad () {
     uni.$once('initHomeLoading', () => {
       this.homeLoading = true
-      console.log('loading开始')
     })
     uni.$once('initHomeLocation', (data) => {
       this.home = data
       this.homeLoading = false
-      console.log('loading结束')
-      // console.log('监听到了', data)
     })
     this.getList()
   },
