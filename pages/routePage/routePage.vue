@@ -83,12 +83,12 @@ export default {
     }
   },
   onLoad (option) {
-    // const test = uni.getStorageSync('store')
-    // this.target = test[0]?.target
-    // this.home = test[0]?.home
-    const { home, target } = JSON.parse(decodeURIComponent(option.list))
-    this.home = home
-    this.target = target
+    const test = uni.getStorageSync('store')
+    this.target = test[0]?.target
+    this.home = test[0]?.home
+    // const { home, target } = JSON.parse(decodeURIComponent(option.list))
+    // this.home = home
+    // this.target = target
     this.RLD = new RoutePlan({
       home: this.home,
       target: this.target,

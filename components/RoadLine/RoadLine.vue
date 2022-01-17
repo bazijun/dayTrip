@@ -58,6 +58,7 @@
 
 <script>
 import { routePlanPluginView } from '../../util/routePlan'
+
 export default {
   props: {
     home: {

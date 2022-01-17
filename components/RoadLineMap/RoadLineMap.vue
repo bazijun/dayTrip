@@ -44,6 +44,21 @@
         </button>
       </view>
     </map>
+    <!-- 地址详情 -->
+    <u-popup v-model="detailShow" mode="bottom" height="30%"  closeable border-radius="14" safe-area-inset-bottom>
+      <view class="location-detail">
+        <view class="t-name width-lg text-line-one">
+          <text class="text-theme text-margin-r">{{currentDetail.title}}</text>{{currentDetail.name}}
+        </view>
+        <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>{{currentDetail.address}}</view>
+        <view v-if="currentDetail.index">距离上一个位置：{{nextDistance}}</view>
+        <view class="margin-top-lx">
+          <u-button type="primary" plain ripple>
+            <u-icon name="map-fill" color="#1F82FF"></u-icon>导航
+          </u-button>
+        </view>
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -53,6 +68,8 @@
     scale放大缩小，重置画面包含所有标点，隐藏气泡
 */
 import { routePlanPluginView } from '../../util/routePlan'
+import api from '../../util/util'
+
 export default {
   props: {
     home: {
@@ -82,7 +99,22 @@ export default {
       mapCtx: null,
       satellite: false,
       markerCallout: true,
-      scale: 16
+      scale: 16,
+      detailShow: false,
+      currentDetail: {},
+      T: {
+        0: '起点：',
+        1: '目标二：',
+        2: '目标三：',
+        3: '目标四：',
+        4: '目标五：',
+        5: '目标六：',
+        6: '目标七：',
+        7: '目标八：',
+        8: '目标九：',
+        9: '目标十：'
+      }
+
     }
   },
 
@@ -105,6 +137,10 @@ export default {
       })
     },
 
+    nextDistance () {
+      return api.toKm(this.currentDetail?.route)
+    },
+
     markers () {
       if (!this.roadMounted) return []
       const markers = [this.home, ...this.target]
@@ -116,6 +152,8 @@ export default {
           name: v.name,
           latitude: v.latitude,
           longitude: v.longitude,
+          route: v.route || undefined,
+          address: v.address,
           iconPath: `/static/icon/map/${index}.png`,
           width: ['end', 'start'].includes(index) ? 30 : 20,
           height: ['end', 'start'].includes(index) ? 30 : 20,
@@ -211,6 +249,18 @@ export default {
     },
 
     navigation ({ markerId }) {
+      this.detailShow = true
+      const currentDetail = this.markers?.find((v) => v.id === markerId)
+      const index = this.markers.findIndex(v => v.id === markerId)
+      const title = (this.markers.length - 1) === index ? '终点站：' : this.T[index]
+      this.currentDetail = {
+        ...currentDetail,
+        title,
+        index
+      }
+    },
+
+    navigationTo ({ markerId }) {
       const currentMarker = this.markers?.find((v) => v.id === markerId)
       const endPoint = {
         name: currentMarker.name,
@@ -361,5 +411,9 @@ export default {
     justify-content: center;
     align-items: center;
   }
+}
+.location-detail {
+  position: relative;
+  padding: 40rpx;
 }
 </style>
