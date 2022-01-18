@@ -3,23 +3,54 @@
     <!-- 家 -->
     <view class="home-box">
       <view class="home-on-box">
-        <image v-if="mode === 'transit'" class="theme-img" src="/static/img/bus.png" mode="widthFix" />
-        <image v-else-if="mode === 'driving'" class="theme-img" src="/static/img/car.png" mode="widthFix" />
-        <image v-else-if="mode === 'walking'" class="theme-img" src="/static/img/walk.png" mode="widthFix" />
-        <image v-else-if="mode === 'bicycling'" class="theme-img" src="/static/img/bike.png" mode="widthFix" />
+        <image
+          v-if="mode === 'transit'"
+          class="theme-img"
+          src="/static/img/bus.png"
+          mode="widthFix"
+        />
+        <image
+          v-else-if="mode === 'driving'"
+          class="theme-img"
+          src="/static/img/car.png"
+          mode="widthFix"
+        />
+        <image
+          v-else-if="mode === 'walking'"
+          class="theme-img"
+          src="/static/img/walk.png"
+          mode="widthFix"
+        />
+        <image
+          v-else-if="mode === 'bicycling'"
+          class="theme-img"
+          src="/static/img/bike.png"
+          mode="widthFix"
+        />
         <view class="width-xs text-center">
           <view class="flex-aic-jcc margin-top-lg">
             <image class="icon-img" src="/static/img/world.png" />
-            <view class="text-theme t-name">起 点</view>
+            <view class="text-primary t-name">起 点</view>
             <!-- <view v-if="true" class="warning-btn">当前位置</view> -->
           </view>
-          <view class="t-name text-line-one">{{home.name}}</view>
-          <view class="t-address text-line-two"><text class="text-l-bold">详细地址:</text>{{home.address}}</view>
+          <view class="t-name text-line-one">{{ home.name }}</view>
+          <view class="t-address text-line-one">
+            <text class="text-l-bold">详细地址:</text>{{ home.address }}
+          </view>
+        </view>
+        <view class="margin-bottom">
+          <text class="text-l-bold">总里程：</text>
+            {{mode2Emoji[mode]}}{{sumDistance}}
+            <text class="text-margin-l15">{{' 🕒 '+ sumDuration}}</text>
         </view>
       </view>
     </view>
     <view class="down-img-box">
-      <image class="down-img" src="../../static/img/down/down-6.png" mode="widthFix" />
+      <image
+        class="down-img"
+        src="../../static/img/down/down-6.png"
+        mode="widthFix"
+      />
     </view>
     <!-- 目标列表 -->
     <view v-for="(item, index) in targetList" :key="item.id">
@@ -28,29 +59,54 @@
         <view v-if="false" class="current-loaction">
           <view class="current-btn">当前位置</view>
         </view>
-        <u-badge :offset="[-8,-8]" type="success" :count="index + 1"></u-badge>
+        <u-badge :offset="[-8, -8]" type="success" :count="index + 1"></u-badge>
         <view>
-          <view class="t-name width-lg text-line-one"><text
-              class="text-theme text-margin-r">{{(target.length - 1) === index ? '终点站：' : T[index]}}</text>{{item.name}}</view>
-          <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>{{item.address}}</view>
+          <view class="t-name width-lg text-line-one"
+            ><text class="text-primary text-margin-r">{{
+              target.length - 1 === index ? "终点站：" : T[index]
+            }}</text
+            >{{ item.name }}</view
+          >
+          <view class="t-address width-lg text-line-one"
+            ><text class="text-l-bold">详细地址:</text>{{ item.address }}</view
+          >
+          <view class="margin-bottom t-address">
+            <text class="text-l-bold">距上个目标：</text>
+             {{mode2Emoji[mode]}}{{api.toKm(item.route)}}
+             <text class="text-margin-l15">{{' 🕒 '+ api.toTime(item.duration)}}</text>
+          </view>
         </view>
-        <u-icon name="map-fill" color="#1F82FF" size="65" ></u-icon>
+        <u-icon name="map-fill" color="#1F82FF" size="65"></u-icon>
       </view>
       <!-- 下个目标 指引图标 和 数据板 -->
       <view class="flex-aic-jcc">
         <view class="down-img-box">
-          <image class="down-img" src="../../static/img/down/down-6.png" mode="widthFix" />
+          <image
+            class="down-img"
+            src="../../static/img/down/down-6.png"
+            mode="widthFix"
+          />
         </view>
         <!-- 数据板子 -->
         <!-- <view class="data-panel">
-
         </view> -->
       </view>
     </view>
     <!-- 返家 -->
-    <u-button shape="circle" :custom-style="btnCustomStyle" type="info" :ripple="true" @click="goBack">
+    <u-button
+      shape="circle"
+      :custom-style="btnCustomStyle"
+      type="info"
+      :ripple="true"
+      @click="goBack"
+    >
       回
-      <u-icon name="home-fill" color="#fff" size="60" style="padding:15rpx"></u-icon>
+      <u-icon
+        name="home-fill"
+        color="#fff"
+        size="60"
+        style="padding: 15rpx"
+      ></u-icon>
       家
     </u-button>
   </view>
@@ -58,6 +114,7 @@
 
 <script>
 import { routePlanPluginView } from '../../util/routePlan'
+import api from '../../util/util'
 
 export default {
   props: {
@@ -92,6 +149,13 @@ export default {
         8: '目标九：',
         9: '目标十：'
       },
+      api: api,
+      mode2Emoji: {
+        driving: '🚕 ',
+        bicycling: '🚲 ',
+        walking: '🚶‍♂️ ',
+        transit: '🚌 '
+      },
       btnCustomStyle: {
         width: '240rpx',
         height: '80rpx',
@@ -105,6 +169,16 @@ export default {
   computed: {
     targetList () {
       return this.roadMounted ? this.target : []
+    },
+
+    sumDistance () {
+      const distanceList = this.target?.map(v => v.route)
+      return api.toKm(distanceList.reduce((pre, val) => pre + val, 0))
+    },
+
+    sumDuration () {
+      const durationList = this.target?.map(v => v.duration)
+      return api.toTime(durationList.reduce((pre, val) => pre + val, 0))
     }
   },
   methods: {
@@ -115,18 +189,6 @@ export default {
         longitude: this.home.longitude
       }
       routePlanPluginView(endPoint)
-      // uni.openLocation({
-      //   latitude: this.home.latitude,
-      //   longitude: this.home.longitude,
-      //   name: this.home.name,
-      //   address: this.home.address,
-      //   success: function () {
-      //     console.log('success')
-      //   },
-      //   fail: function (err) {
-      //     console.log(err)
-      //   }
-      // })
     },
     getLocation (location) {
       const endPoint = {
@@ -185,7 +247,7 @@ export default {
     box-sizing: border-box;
     background-color: $theme-light-color;
     width: 100%;
-    height: 160rpx;
+    height: 170rpx;
     border: 2rpx solid #e6e6e6;
     margin: 20rpx auto;
     padding: 0 30rpx;

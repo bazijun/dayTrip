@@ -28,11 +28,12 @@
         :roadMounted="roadMounted"
       ></road-line>
       <road-line-map
+        v-show="!tabsCurrent"
         ref="map"
+        :mode="mode"
         :home="home"
         :target="target"
         :roadMounted="roadMounted"
-        v-show="!tabsCurrent"
       ></road-line-map>
     </view>
   </view>

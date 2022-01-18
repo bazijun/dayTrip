@@ -78,11 +78,23 @@ export default {
     if ((m / 1000).toFixed(1).split('.')[1] === '0') return parseInt(m / 1000) + '公里'
     return (m / 1000).toFixed(1) + '公里'
   },
-  toTime (m) {
-    if (m < 60) return m + '分钟'
-    if (m > 60 * 24) return `${parseInt(m / (60 * 24))}天${parseInt(m % (60 * 24) / 60)}小时${m % 60}分钟`
-    if (m % 60 === 0) return `${parseInt(m / 60)}小时`
-    return `${parseInt(m / 60)}小时${m % 60}分钟`
+
+  // 传入的分钟数  转换成天、时、分
+  toTime (StatusMinute) {
+    var day = parseInt(StatusMinute / 60 / 24)
+    var hour = parseInt(StatusMinute / 60 % 24)
+    var min = parseInt(StatusMinute % 60)
+    StatusMinute = ''
+    if (day > 0) {
+      StatusMinute = day + '天'
+    }
+    if (hour > 0) {
+      StatusMinute += hour + '小时'
+    }
+    if (min > 0) {
+      StatusMinute += parseFloat(min) + '分钟'
+    }
+    return StatusMinute || '627光年'
   }
 
 }

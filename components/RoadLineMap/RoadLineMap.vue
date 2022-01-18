@@ -45,15 +45,31 @@
       </view>
     </map>
     <!-- 地址详情 -->
-    <u-popup v-model="detailShow" mode="bottom" height="30%"  closeable border-radius="14" safe-area-inset-bottom>
+    <u-popup v-model="detailShow" mode="bottom" height="30%"  closeable border-radius="14">
       <view class="location-detail">
-        <view class="t-name width-lg text-line-one">
-          <text class="text-theme text-margin-r">{{currentDetail.title}}</text>{{currentDetail.name}}
+        <view>
+          <view class="t-name width-xl text-line-one">
+            <text :class="'text-' +  currentDetail.color + ' text-margin-r'">
+              {{currentDetail.title}}
+            </text>
+              {{currentDetail.name}}
+          </view>
+          <view class="t-address width-xl text-line-one">
+            <text class="text-l-bold">详细地址：</text>{{currentDetail.address}}
+          </view>
         </view>
-        <view class="t-address width-lg text-line-one"><text class="text-l-bold">详细地址:</text>{{currentDetail.address}}</view>
-        <view v-if="currentDetail.index">距离上一个位置：{{nextDistance}}</view>
-        <view class="margin-top-lx">
-          <u-button type="primary" plain ripple>
+        <view>
+          <view class="margin-bottom" v-if="currentDetail.index">
+            <text class="t-address text-l-bold">距上个目标：</text>
+             {{mode2Emoji[mode]}}{{currentDetail.route}}
+             <text class="text-margin-l15">{{' 🕒 '+ currentDetail.duration}}</text>
+          </view>
+          <view class="margin-bottom" v-else>
+            <text class="t-address text-l-bold">总里程：</text>
+           {{mode2Emoji[mode]}}{{sumDistance}}
+            <text class="text-margin-l15">{{' 🕒 '+ sumDuration}}</text>
+          </view>
+          <u-button type="primary" plain ripple @click="navigationTo">
             <u-icon name="map-fill" color="#1F82FF"></u-icon>导航
           </u-button>
         </view>
@@ -83,6 +99,10 @@ export default {
     roadMounted: {
       type: Boolean,
       default: false
+    },
+    mode: {
+      type: String,
+      default: ''
     }
   },
   mounted () {
@@ -102,17 +122,24 @@ export default {
       scale: 16,
       detailShow: false,
       currentDetail: {},
+      mode2Emoji: {
+        driving: '🚕 ',
+        bicycling: '🚲 ',
+        walking: '🚶‍♂️ ',
+        transit: '🚌 '
+      },
       T: {
         0: '起点：',
-        1: '目标二：',
-        2: '目标三：',
-        3: '目标四：',
-        4: '目标五：',
-        5: '目标六：',
-        6: '目标七：',
-        7: '目标八：',
-        8: '目标九：',
-        9: '目标十：'
+        1: '目标一：',
+        2: '目标二：',
+        3: '目标三：',
+        4: '目标四：',
+        5: '目标五：',
+        6: '目标六：',
+        7: '目标七：',
+        8: '目标八：',
+        9: '目标九：',
+        10: '目标十：'
       }
 
     }
@@ -137,8 +164,14 @@ export default {
       })
     },
 
-    nextDistance () {
-      return api.toKm(this.currentDetail?.route)
+    sumDistance () {
+      const distanceList = this.target?.map(v => v.route)
+      return api.toKm(distanceList.reduce((pre, val) => pre + val, 0))
+    },
+
+    sumDuration () {
+      const durationList = this.target?.map(v => v.duration)
+      return api.toTime(durationList.reduce((pre, val) => pre + val, 0))
     },
 
     markers () {
@@ -152,7 +185,8 @@ export default {
           name: v.name,
           latitude: v.latitude,
           longitude: v.longitude,
-          route: v.route || undefined,
+          route: api.toKm(v.route) || undefined,
+          duration: api.toTime(v.duration) || undefined,
           address: v.address,
           iconPath: `/static/icon/map/${index}.png`,
           width: ['end', 'start'].includes(index) ? 30 : 20,
@@ -163,7 +197,7 @@ export default {
             content:
               v.name?.length > 10 ? v.name.substring(0, 10) + '...' : v.name,
             borderRadius: 10,
-            fontSize: 12,
+            fontSize: 13,
             borderColor: '#fff',
             borderWidth: 1,
             bgColor:
@@ -179,7 +213,7 @@ export default {
               : this.satellite
                 ? '#1A1A1A'
                 : '#fff',
-            padding: 5
+            padding: 6
           }
         }
       })
@@ -255,17 +289,17 @@ export default {
       const title = (this.markers.length - 1) === index ? '终点站：' : this.T[index]
       this.currentDetail = {
         ...currentDetail,
+        color: index === 0 ? 'primary' : (this.markers.length - 1) === index ? 'warning' : 'success',
         title,
         index
       }
     },
 
-    navigationTo ({ markerId }) {
-      const currentMarker = this.markers?.find((v) => v.id === markerId)
+    navigationTo () {
       const endPoint = {
-        name: currentMarker.name,
-        latitude: currentMarker.latitude,
-        longitude: currentMarker.longitude
+        name: this.currentDetail.name,
+        latitude: this.currentDetail.latitude,
+        longitude: this.currentDetail.longitude
       }
       routePlanPluginView(endPoint)
     },
@@ -414,6 +448,11 @@ export default {
 }
 .location-detail {
   position: relative;
-  padding: 40rpx;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 0 40rpx;
 }
 </style>

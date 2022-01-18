@@ -42,7 +42,6 @@ export class RoutePlan {
     this.home = routeLineData.home
     this.target = routeLineData.target
     this.mode = routeLineData.mode
-    this.type = routeLineData.type // distance or duration
     this.targetSequence = [] // 优化后的目标序列
     this.index = 1
   }
@@ -59,13 +58,13 @@ export class RoutePlan {
         to: `${v.latitude},${v.longitude}`
       }
       const distance = this.distance(path)
-      const { route, polyline, error } = await this.diffDistance(path).catch(() => {})
+      const { route, duration, polyline, error } = await this.diffDistance(path).catch(() => {})
       if (error) {
         routeLine = [...routeLine, { ...v, error }]
       } else {
-        routeLine = [...routeLine, { ...v, route, polyline }]
+        routeLine = [...routeLine, { ...v, route, duration, polyline }]
       }
-      console.log(`🚀 ${start.name} ➡ ${v.name}: 云${this.type === 'distance' ? '距离' : '耗时'} ➡ ${route}m； 本地${this.type === 'distance' ? '距离' : '耗时'} ➡ ${distance}m`)
+      console.log(`🚀 ${start.name} ➡ ${v.name}: 云距离/耗时 ➡ ${route}m / ${duration}分 ； 本地距离 ➡ ${distance}m`)
     }
     const sortTarget = routeLine.sort((a, b) => a.route - b.route) // 排序后的 target 数组
     const mark = sortTarget[0] // 标记点对象 (以排序成功的第一位目标点)
@@ -86,7 +85,7 @@ export class RoutePlan {
   // 简单模式 => 只是单纯比较 起点和各目标点的耗时(距离)，然后排序
   async simpleMode () {
     let routeLine = []
-    console.log(`\n 🔵 == ${this.mode} == ${this.type}`)
+    console.log(`\n 🔵 == ${this.mode}`)
     for (const v of this.target) {
       const path = {
         mode: this.mode,
@@ -95,7 +94,7 @@ export class RoutePlan {
       }
       const { route, polyline } = await this.diffDistance(path).catch(() => { })
       routeLine = [...routeLine, { ...v, route, polyline }]
-      console.log(`🚀 ${route}=>${this.type === 'distance' ? '距离' : '耗时'}=>${v.name}`)
+      console.log(`🚀 ${route}=>距离=>${v.name}`)
     }
     const simpleLine = routeLine.sort((a, b) => a.route - b.route)
     return simpleLine
@@ -158,7 +157,9 @@ export class RoutePlan {
               }
             }
             resolve({
-              route: res.result.routes[0][this.type], polyline
+              route: res.result.routes[0].distance,
+              duration: res.result.routes[0].duration,
+              polyline
             })
           },
           fail: err => {

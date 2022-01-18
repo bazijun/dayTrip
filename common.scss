@@ -4,7 +4,8 @@ $theme-light-color: #DEECFF;
 $theme-anti-color: #999FA5;
 $theme-bg: #F8F8F8;
 
-$theme-warning:#f0ad4e;
+// $theme-warning:#f0ad4e;
+$theme-warning:#FF6732;
 $theme-success:#67C23A;
 
 /* 强改 */
@@ -30,7 +31,7 @@ $theme-success:#67C23A;
 }
 .flex-se {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-around;
 }
 
 /* 微调 */
@@ -43,17 +44,26 @@ $theme-success:#67C23A;
 .width-lg {
     width: 520rpx;
 }
+.width-xl {
+    width: 620rpx;
+}
 .margin-top-lg{
     margin-top: 15rpx
 }
 .margin-top-xl{
     margin-top: 100rpx
 }
+.margin-bottom{
+    margin-bottom: 15rpx
+}
 .text-margin-r{
     margin-right: 10rpx;
 }
 .text-margin-l{
     margin-left: 10rpx;
+}
+.text-margin-l15{
+    margin-left: 15rpx;
 }
 .text-margin-l-sm{
     margin-left: 15rpx;
@@ -68,6 +78,9 @@ $theme-success:#67C23A;
 }
 .i-padding-lg{
     padding: 30rpx
+}
+.padding-top-vh{
+    padding-top: 5vh
 }
 
 /* 字体 */
@@ -84,8 +97,16 @@ $theme-success:#67C23A;
 .text-grey {
     color: #666666
 }
-.text-theme{
+.text-primary{
     color: $theme-color
+}
+.text-warning{
+    color: $theme-warning
+
+}
+.text-success{
+    color: $theme-success
+
 }
 .t-name{
     font-size: 36rpx;
