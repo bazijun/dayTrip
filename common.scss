@@ -94,6 +94,12 @@ $theme-success:#67C23A;
 .text-sm{
     font-size: 25rpx;
 }
+.text-white{
+    color: #FFFFFF
+}
+.text-light{
+    color: $theme-light-color
+}
 .text-grey {
     color: #666666
 }
@@ -123,6 +129,9 @@ $theme-success:#67C23A;
     letter-spacing : 2rpx;
     color: #FFFFFF;
   }
+.text-bold {
+    font-weight: bold;
+}
 .text-l-bold{
     font-weight: bold;
     color: #333333;

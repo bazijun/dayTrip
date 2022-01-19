@@ -34,6 +34,7 @@ const qqMap = new QQMapWX({
         不弹窗，但会再路线规划页面，禁用对应功能。
     3. 未来：
       混合模式，使用可自定义。多少m内选择某种交通工具
+    4. 百分百弹窗
 
 -- TODO **/
 
@@ -44,6 +45,18 @@ export class RoutePlan {
     this.mode = routeLineData.mode
     this.targetSequence = [] // 优化后的目标序列
     this.index = 1
+    this.event = {}
+  }
+
+  subscribe (name, callback) {
+    this.event[name] = this[name]
+    this.event[name].apply(this).then(data => callback(data))
+  }
+
+  unSubscribe (name) {
+    if (this.event[name]) {
+      delete this.event[name]
+    }
   }
 
   // 标准模式 <迪杰斯特拉算法(Dijkstra)> => 递归遍历 运算时间为 简单模式的targets.length倍

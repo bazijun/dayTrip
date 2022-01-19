@@ -125,7 +125,7 @@ export default {
       mode2Emoji: {
         driving: '🚕 ',
         bicycling: '🚲 ',
-        walking: '🚶‍♂️ ',
+        walking: '🚶 ',
         transit: '🚌 '
       },
       T: {
@@ -189,15 +189,15 @@ export default {
           duration: api.toTime(v.duration) || undefined,
           address: v.address,
           iconPath: `/static/icon/map/${index}.png`,
-          width: ['end', 'start'].includes(index) ? 30 : 20,
-          height: ['end', 'start'].includes(index) ? 30 : 20,
+          width: ['end', 'start'].includes(index) ? 35 : 25,
+          height: ['end', 'start'].includes(index) ? 35 : 25,
           // zIndex: index === 'start' ? 99 : index === 'end' ? 98 : zIndex, // uniApp-map暂无 zIndex属性
           callout: {
             display: 'ALWAYS',
             content:
               v.name?.length > 10 ? v.name.substring(0, 10) + '...' : v.name,
             borderRadius: 10,
-            fontSize: 13,
+            fontSize: 14,
             borderColor: '#fff',
             borderWidth: 1,
             bgColor:

@@ -35,14 +35,14 @@
           </view>
           <view class="t-name text-line-one">{{ home.name }}</view>
           <view class="t-address text-line-one">
-            <text class="text-l-bold">详细地址:</text>{{ home.address }}
+            <text class="text-l-bold">地址:</text>{{ home.address }}
           </view>
         </view>
-        <view class="margin-bottom">
-          <text class="text-l-bold">总里程：</text>
-            {{mode2Emoji[mode]}}{{sumDistance}}
-            <text class="text-margin-l15">{{' 🕒 '+ sumDuration}}</text>
-        </view>
+      </view>
+      <view class="text-light">
+        <text class="text-bold">总里程：</text>
+          {{mode2Emoji[mode]}}{{sumDistance}}
+          <text class="text-margin-l15">{{' 🕒 '+ sumDuration}}</text>
       </view>
     </view>
     <view class="down-img-box">
@@ -68,7 +68,7 @@
             >{{ item.name }}</view
           >
           <view class="t-address width-lg text-line-one"
-            ><text class="text-l-bold">详细地址:</text>{{ item.address }}</view
+            ><text class="text-l-bold">地址:</text>{{ item.address }}</view
           >
           <view class="margin-bottom t-address">
             <text class="text-l-bold">距上个目标：</text>
@@ -153,7 +153,7 @@ export default {
       mode2Emoji: {
         driving: '🚕 ',
         bicycling: '🚲 ',
-        walking: '🚶‍♂️ ',
+        walking: '🚶 ',
         transit: '🚌 '
       },
       btnCustomStyle: {
@@ -218,7 +218,7 @@ export default {
 .home-box {
   overflow: hidden;
   height: 240rpx;
-  width: 650rpx;
+  width: 700rpx;
   margin: 20rpx auto;
   position: relative;
   background-image: url("/static/img/blue-home.png");
@@ -228,13 +228,13 @@ export default {
   box-shadow: 0px 2px 8px 0px rgba(16, 105, 231, 0.2);
   .home-on-box {
     padding: 20rpx;
-    width: 630rpx;
-    height: 220rpx;
+    width: 680rpx;
+    height: 175rpx;
     margin: 10rpx;
     background: #fff;
     border-radius: 20rpx;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     text-align: center;
   }
@@ -247,10 +247,10 @@ export default {
     box-sizing: border-box;
     background-color: $theme-light-color;
     width: 100%;
-    height: 170rpx;
+    height: 160rpx;
     border: 2rpx solid #e6e6e6;
     margin: 20rpx auto;
-    padding: 0 30rpx;
+    padding: 0 15rpx;
     display: flex;
     justify-content: space-between;
     align-items: center;
