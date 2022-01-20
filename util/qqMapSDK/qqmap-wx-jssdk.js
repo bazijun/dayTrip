@@ -661,6 +661,7 @@ class QQMapWX {
       throw Error('key值不能为空')
     }
     this.key = options.key
+    this.requestList = []
   };
 
   /**
@@ -1105,13 +1106,26 @@ class QQMapWX {
       if (options.sig) {
         requestParam.sig = Utils.getSig(requestParam, options.sig, 'direction', options.mode)
       }
-      wx.request(Utils.buildWxRequestConfig(options, {
+      that.requestList.push(wx.request(Utils.buildWxRequestConfig(options, {
         url: SET_URL_DIRECTION,
         data: requestParam
-      }, 'direction'))
+      }, 'direction')))
     }
 
     Utils.locationProcess(options, locationsuccess)
+  }
+
+  /**
+   * 取消路线规划订阅：
+   */
+
+  unRequestDirection () {
+    if (this.requestList?.length) {
+      console.log(this.requestList, '请求队列')
+      // 理论上只有停止末尾最后一个request
+      this.requestList.forEach(req => { req.abort() })
+      this.requestList = []
+    }
   }
 };
 

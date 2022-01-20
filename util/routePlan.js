@@ -45,22 +45,22 @@ export class RoutePlan {
     this.mode = routeLineData.mode
     this.targetSequence = [] // 优化后的目标序列
     this.index = 1
+    this.run = true
     this.event = {}
   }
 
-  subscribe (name, callback) {
-    this.event[name] = this[name]
-    this.event[name].apply(this).then(data => callback(data))
-  }
-
-  unSubscribe (name) {
-    if (this.event[name]) {
-      delete this.event[name]
-    }
+  unSubscribe () {
+    qqMap.unRequestDirection()
+    this.run = false
   }
 
   // 标准模式 <迪杰斯特拉算法(Dijkstra)> => 递归遍历 运算时间为 简单模式的targets.length倍
   async standardMode (start = this.home, targets = this.target) {
+    if (!this.run) {
+      console.log('应用终止')
+      return
+    }
+    // this.run = true
     console.log(`⭐ 第${this.index}轮； 起点 ➡ ${start.name}`)
     let routeLine = []
     this.index++

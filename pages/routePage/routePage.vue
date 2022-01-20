@@ -84,12 +84,12 @@ export default {
     }
   },
   onLoad (option) {
-    // const test = uni.getStorageSync('store')
-    // this.target = test[0]?.target
-    // this.home = test[0]?.home
-    const { home, target } = JSON.parse(decodeURIComponent(option.list))
-    this.home = home
-    this.target = target
+    const test = uni.getStorageSync('store')
+    this.target = test[0]?.target
+    this.home = test[0]?.home
+    // const { home, target } = JSON.parse(decodeURIComponent(option.list))
+    // this.home = home
+    // this.target = target
     this.RLD = new RoutePlan({
       home: this.home,
       target: this.target,
@@ -116,7 +116,7 @@ export default {
     },
 
     async setOrderly (mode, type = this.type) {
-      this.RLD.unSubscribe('standardMode')
+      this.RLD.unSubscribe()
       this.roadMounted = false
       this.mode = mode
       this.type = type
@@ -126,30 +126,17 @@ export default {
       if (this.routeLineCache[mode][type].length) {
         this.target = this.routeLineCache[mode][type]
         this.roadMounted = true
-        // uni.showToast({
-        //   title: '模式切换成功',
-        //   duration: 1000
-        // })
         return
       }
-      // uni.showLoading({
-      //   title: '会有点久，稍等',
-      //   mask: true
-      // })
       console.time('🕓 总耗时')
-      // this.target = await this.RLD.subscribe('standardMode').catch(() => {})
-      this.RLD.subscribe('standardMode', data => {
-        console.log({ data })
-      })
-      this.routeLineCache[mode][type] = this.target
-      this.roadMounted = true
-      console.log('挂载成功！')
-      console.timeEnd('🕓 总耗时')
-      // uni.hideLoading()
-      // uni.showToast({
-      //   title: '久等了',
-      //   duration: 1000
-      // })
+      const stand = await this.RLD.standardMode().catch(() => {})
+      if (stand?.length === this.target.length) {
+        this.target = stand
+        this.routeLineCache[mode][type] = this.target
+        this.roadMounted = true
+        console.log('挂载成功！')
+        console.timeEnd('🕓 总耗时')
+      }
     }
   },
   components: { RoadLine, RoadLineMap }
