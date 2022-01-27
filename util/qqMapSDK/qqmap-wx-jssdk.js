@@ -1123,7 +1123,7 @@ class QQMapWX {
     if (this.requestList?.length) {
       console.log(this.requestList, '请求队列')
       // 理论上只有停止末尾最后一个request
-      this.requestList.forEach(req => { req.abort() })
+      this.requestList.map(req => req.abort())
       this.requestList = []
     }
   }

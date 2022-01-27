@@ -20,15 +20,23 @@
       </view>
     </view>
     <view class="time-line-box">
+      <view class="loading-box" v-if="!roadMounted">
+        <u-line-progress :percent="percent" show-percent striped striped-active active-color="#1F82FF"></u-line-progress>
+        <text>请不要切换，玩命计算中... (●'◡'●)</text>
+      </view>
+      <!-- <view class="loading-box" v-if="!roadMounted">
+        <image style="width: 450rpx; height: 450rpx" src="/static/location-error.png" mode="widthFix" />
+        <view>错误信息</view>
+      </view> -->
       <road-line
-        v-show="tabsCurrent"
+        v-show="tabsCurrent && roadMounted"
         :mode="mode"
         :home="home"
         :target="target"
         :roadMounted="roadMounted"
       ></road-line>
       <road-line-map
-        v-show="!tabsCurrent"
+        v-show="!tabsCurrent && roadMounted"
         ref="map"
         :mode="mode"
         :home="home"
@@ -45,10 +53,12 @@ import { RoutePlan } from '../../util/routePlan'
 import RoadLine from '../../components/RoadLine/RoadLine.vue'
 import RoadLineMap from '../../components/RoadLineMap/RoadLineMap.vue'
 export default {
+
   data () {
     return {
       home: {},
       target: [],
+      index: 1,
       mode: 'driving',
       type: 'distance', // distance | duration
       roadMounted: false,
@@ -83,6 +93,7 @@ export default {
       RLD: null // RoutePlan类的实例
     }
   },
+
   onLoad (option) {
     const test = uni.getStorageSync('store')
     this.target = test[0]?.target
@@ -96,49 +107,66 @@ export default {
       mode: this.mode,
       type: this.type
     })
+    uni.$on('indexChange', index => {
+      this.index = index
+    })
     this.setOrderly(this.mode)
   },
+
   onUnload () {
-    console.log('instance destroy')
     // 实例销毁
     this.RLD = null
   },
+
+  computed: {
+    percent () {
+      const percent = parseInt(100 / this.target?.length)
+      console.log(percent, '百分比的值')
+      return (this.index - 1) * percent
+    }
+  },
+
   methods: {
     tabsChange (index) {
       this.tabsCurrent = index
     },
 
     modeTabsChange (index) {
-      this.modeTabsCurrent = index
+      this.RLD.unSubscribe()
       const table = ['driving', 'bicycling', 'walking', 'transit']
-      this.$refs.map.setIncludePoints()
-      this.setOrderly(table[index])
+      this.modeTabsCurrent = index
+      this.roadMounted = false
+      setTimeout(async () => {
+        this.RLD.run = true
+        await this.setOrderly(table[index])
+        this.$refs.map.setIncludePoints()
+      }, 2000)
     },
 
     async setOrderly (mode, type = this.type) {
-      this.RLD.unSubscribe()
       this.roadMounted = false
       this.mode = mode
       this.type = type
       this.RLD.mode = mode
       this.RLD.type = type
       // 判断是否存在缓存中。缓存中有就不请求了。直接用缓存数据
-      if (this.routeLineCache[mode][type].length) {
+      if (this.routeLineCache[mode][type]?.length) {
         this.target = this.routeLineCache[mode][type]
         this.roadMounted = true
         return
       }
       console.time('🕓 总耗时')
       const stand = await this.RLD.standardMode().catch(() => {})
-      if (stand?.length === this.target.length) {
+      console.timeEnd('🕓 总耗时')
+      if (stand?.every(v => v?.id) && stand?.length === this.target.length) {
         this.target = stand
-        this.routeLineCache[mode][type] = this.target
+        this.routeLineCache[mode][type] = stand
         this.roadMounted = true
         console.log('挂载成功！')
-        console.timeEnd('🕓 总耗时')
       }
     }
   },
+
   components: { RoadLine, RoadLineMap }
 }
 </script>
@@ -163,6 +191,11 @@ export default {
   overflow: auto;
   height: calc(100vh - 165rpx);
   margin: auto;
+  .loading-box{
+    padding: 30vh 30rpx 0 30rpx;
+    color: #818181;
+    text-align: center;
+  }
 }
 .i-tabs-box {
   width: 100%;

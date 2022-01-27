@@ -50,20 +50,25 @@ export class RoutePlan {
   }
 
   unSubscribe () {
-    qqMap.unRequestDirection()
+    this.run && qqMap.unRequestDirection()
     this.run = false
   }
 
   // 标准模式 <迪杰斯特拉算法(Dijkstra)> => 递归遍历 运算时间为 简单模式的targets.length倍
   async standardMode (start = this.home, targets = this.target) {
     if (!this.run) {
-      console.log('应用终止')
+      console.log('应用终止💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥')
+      this.index = 1
+      this.targetSequence = []
+      uni.$emit('indexChange', this.index)
+      // 得刚好进入这里时，清除旧请求。发起新请求。
       return
     }
     // this.run = true
     console.log(`⭐ 第${this.index}轮； 起点 ➡ ${start.name}`)
     let routeLine = []
     this.index++
+    uni.$emit('indexChange', this.index)
     for (const v of targets) {
       const path = {
         mode: this.mode,
@@ -177,7 +182,7 @@ export class RoutePlan {
           },
           fail: err => {
             const error = { ...err }
-            resolve({ error })
+            error?.status !== 1000 && resolve({ error })
             console.log('⭕ 路线规划错误', err)
             reject(err)
           }
