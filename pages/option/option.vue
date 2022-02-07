@@ -26,7 +26,7 @@ export default {
         },
         {
           color: '#1F82FF',
-          title: '版本说明',
+          title: '使用说明',
           icon: 'file-text-fill',
           path: '../document/document',
           badge: true

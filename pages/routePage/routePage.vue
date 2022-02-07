@@ -20,23 +20,23 @@
       </view>
     </view>
     <view class="time-line-box">
-      <view class="loading-box" v-if="!roadMounted">
+      <view class="loading-box" v-if="errorMsg">
+        <image style="width: 350rpx; height: 350rpx" src="/static/location-error.png" mode="widthFix" />
+        <view>{{errorMsg}}</view>
+      </view>
+      <view class="loading-box" v-else-if="!roadMounted">
         <u-line-progress :percent="percent" show-percent striped striped-active active-color="#1F82FF"></u-line-progress>
         <text>请不要切换，玩命计算中... (●'◡'●)</text>
       </view>
-      <!-- <view class="loading-box" v-if="!roadMounted">
-        <image style="width: 450rpx; height: 450rpx" src="/static/location-error.png" mode="widthFix" />
-        <view>错误信息</view>
-      </view> -->
       <road-line
-        v-show="tabsCurrent && roadMounted"
+        v-show="tabsCurrent && roadMounted && !errorMsg"
         :mode="mode"
         :home="home"
         :target="target"
         :roadMounted="roadMounted"
       ></road-line>
       <road-line-map
-        v-show="!tabsCurrent && roadMounted"
+        v-show="!tabsCurrent && roadMounted && !errorMsg"
         ref="map"
         :mode="mode"
         :home="home"
@@ -58,10 +58,11 @@ export default {
     return {
       home: {},
       target: [],
-      index: 1,
+      frame: 1,
       mode: 'driving',
       type: 'distance', // distance | duration
       roadMounted: false,
+      errorMsg: null,
       tabsList: ['地图', '路线列表'],
       modeTabsList: [
         { name: '驾车' },
@@ -95,12 +96,12 @@ export default {
   },
 
   onLoad (option) {
-    const test = uni.getStorageSync('store')
-    this.target = test[0]?.target
-    this.home = test[0]?.home
-    // const { home, target } = JSON.parse(decodeURIComponent(option.list))
-    // this.home = home
-    // this.target = target
+    // const test = uni.getStorageSync('store')
+    // this.target = test[0]?.target
+    // this.home = test[0]?.home
+    const { home, target } = JSON.parse(decodeURIComponent(option.list))
+    this.home = home
+    this.target = target
     this.RLD = new RoutePlan({
       home: this.home,
       target: this.target,
@@ -108,7 +109,7 @@ export default {
       type: this.type
     })
     uni.$on('indexChange', index => {
-      this.index = index
+      this.frame = index
     })
     this.setOrderly(this.mode)
   },
@@ -120,9 +121,12 @@ export default {
 
   computed: {
     percent () {
-      const percent = parseInt(100 / this.target?.length)
-      console.log(percent, '百分比的值')
-      return (this.index - 1) * percent
+      let num = 0
+      for (let i = 1; i <= this.target.length; i++) {
+        num = num + i
+      }
+      const percent = parseInt(100 / num)
+      return (this.frame - 1) * percent > 100 ? 100 : (this.frame - 1) * percent
     }
   },
 
@@ -136,14 +140,34 @@ export default {
       const table = ['driving', 'bicycling', 'walking', 'transit']
       this.modeTabsCurrent = index
       this.roadMounted = false
-      setTimeout(async () => {
-        this.RLD.run = true
-        await this.setOrderly(table[index])
-        this.$refs.map.setIncludePoints()
-      }, 2000)
+      if (!this.initApp(table[index], this.type)) {
+        setTimeout(async () => {
+          this.RLD.run = true
+          await this.setOrderly(table[index])
+          this.$refs.map.setIncludePoints()
+        }, 2000)
+      }
     },
 
     async setOrderly (mode, type = this.type) {
+      if (this.initApp(mode, type)) return
+      console.time('🕓 总耗时')
+      const stand = await this.RLD.standardMode().catch(() => {})
+      console.timeEnd('🕓 总耗时')
+      if (stand?.status) { // 报错
+        this.errorMsg = '路线规划失败：' + stand.message
+        this.routeLineCache[mode][type] = stand
+        this.roadMounted = true
+      } else if (stand?.every(v => v?.id) && stand?.length === this.target.length) {
+        this.target = stand
+        this.routeLineCache[mode][type] = stand
+        this.roadMounted = true
+      }
+    },
+
+    initApp (mode, type) { // 应用初始化，并判断是否有缓存
+      this.frame = 1
+      this.errorMsg = null
       this.roadMounted = false
       this.mode = mode
       this.type = type
@@ -153,16 +177,13 @@ export default {
       if (this.routeLineCache[mode][type]?.length) {
         this.target = this.routeLineCache[mode][type]
         this.roadMounted = true
-        return
-      }
-      console.time('🕓 总耗时')
-      const stand = await this.RLD.standardMode().catch(() => {})
-      console.timeEnd('🕓 总耗时')
-      if (stand?.every(v => v?.id) && stand?.length === this.target.length) {
-        this.target = stand
-        this.routeLineCache[mode][type] = stand
+        return true
+      } else if (this.routeLineCache[mode][type]?.status) { // 错误信息的缓存
+        this.errorMsg = this.routeLineCache[mode][type]?.message
         this.roadMounted = true
-        console.log('挂载成功！')
+        return true
+      } else {
+        return false
       }
     }
   },

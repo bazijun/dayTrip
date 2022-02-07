@@ -45,6 +45,7 @@ export class RoutePlan {
     this.mode = routeLineData.mode
     this.targetSequence = [] // 优化后的目标序列
     this.index = 1
+    this.frame = 1
     this.run = true
     this.event = {}
   }
@@ -58,9 +59,10 @@ export class RoutePlan {
   async standardMode (start = this.home, targets = this.target) {
     if (!this.run) {
       console.log('应用终止💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥')
+      this.frame = 1
       this.index = 1
       this.targetSequence = []
-      uni.$emit('indexChange', this.index)
+      uni.$emit('indexChange', this.frame)
       // 得刚好进入这里时，清除旧请求。发起新请求。
       return
     }
@@ -68,7 +70,6 @@ export class RoutePlan {
     console.log(`⭐ 第${this.index}轮； 起点 ➡ ${start.name}`)
     let routeLine = []
     this.index++
-    uni.$emit('indexChange', this.index)
     for (const v of targets) {
       const path = {
         mode: this.mode,
@@ -78,11 +79,16 @@ export class RoutePlan {
       const distance = this.distance(path)
       const { route, duration, polyline, error } = await this.diffDistance(path).catch(() => {})
       if (error) {
-        routeLine = [...routeLine, { ...v, error }]
+        this.targetSequence = []
+        this.index = 1
+        this.frame = 1
+        return { ...error }
       } else {
         routeLine = [...routeLine, { ...v, route, duration, polyline }]
       }
-      console.log(`🚀 ${start.name} ➡ ${v.name}: 云距离/耗时 ➡ ${route}m / ${duration}分 ； 本地距离 ➡ ${distance}m`)
+      this.frame++
+      uni.$emit('indexChange', this.frame)
+      console.log(`🚀 ${this.frame}. ${start.name} ➡ ${v.name}: 云距离/耗时 ➡ ${route}m / ${duration}分 ； 本地距离 ➡ ${distance}m`)
     }
     const sortTarget = routeLine.sort((a, b) => a.route - b.route) // 排序后的 target 数组
     const mark = sortTarget[0] // 标记点对象 (以排序成功的第一位目标点)
@@ -95,6 +101,7 @@ export class RoutePlan {
       const targetSequence = this.targetSequence
       this.targetSequence = []
       this.index = 1
+      this.frame = 1
       console.log('✅完成✅', targetSequence)
       return targetSequence
     }

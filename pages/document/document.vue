@@ -1,16 +1,10 @@
 <template>
- <view>
-   <view v-html="document"></view>
- </view>
+  <view v-html="document"></view>
 </template>
 
 <script>
 import { markdown } from './markdown.js'
 export default {
-  data () {
-    return {
-    }
-  },
   computed: {
     document () {
       return markdown
@@ -20,5 +14,7 @@ export default {
 </script>
 
 <style>
-
+  page {
+    background-color: #fff;
+  }
 </style>
