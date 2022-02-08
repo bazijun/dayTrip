@@ -107,11 +107,20 @@ export default {
   },
   mounted () {
     this.mapCtx = uni.createMapContext('tripMap', this)
-    this.setIncludePoints()
   },
 
   beforeDestroy () {
     this.mapCtx = null
+  },
+
+  watch: {
+    roadMounted () {
+      if (this.roadMounted) {
+        this.$nextTick(_ => {
+          this.setIncludePoints()
+        })
+      }
+    }
   },
 
   data () {

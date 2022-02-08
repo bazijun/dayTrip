@@ -122,6 +122,7 @@
         />
       </view>
     </u-modal>
+    <color-egg ref="colorEgg" @nextFn="navigateNext" :Keys="storeName"></color-egg>
     <u-tabbar
       :list="tabbar"
       :mid-button="true"
@@ -137,6 +138,7 @@
   1. uni.chooseLocation 地址切换，如果附近有距离相同的位置，默认选择的地址会匹配不准确
 ******/
 import api from '../../util/util'
+import ColorEgg from '../../components/ColorEgg/ColorEgg'
 export default {
   data () {
     return {
@@ -239,8 +241,6 @@ export default {
         this.home = home
         this.list = target
         this.storeId = id
-      } else {
-        //
       }
     },
 
@@ -293,7 +293,6 @@ export default {
 
     saveRouteGo () {
       // 名字不能重复
-      console.log(this.routeStore)
       const namePd = this.routeStore.some((v) => v.name === this.storeName)
       if (namePd) {
         this.show = true
@@ -314,7 +313,11 @@ export default {
         })
         return
       }
+      // 彩蛋判定
+      !this.$refs.colorEgg.identify() && this.navigateNext()
+    },
 
+    navigateNext () {
       const payload = {
         id: new Date().getTime(),
         name: this.storeName,
@@ -324,6 +327,7 @@ export default {
       }
       this.$store.commit('ADD_ROUTE_STORE', payload)
       const list = JSON.stringify(payload)
+      console.log(payload, '😪')
       // 数据太长 需要进行 encodeURIComponent 编码
       uni.navigateTo({
         url: `../routePage/routePage?list=${encodeURIComponent(list)}`
@@ -343,6 +347,14 @@ export default {
               api.mpOptionLocation(getApp().getHome)
               return
             }
+            if (this.list?.some(v => v?.address === res[1]?.address)) {
+              uni.showToast({
+                title: '起点和目的地不能相同！',
+                icon: 'none',
+                duration: 1500
+              })
+              return
+            }
             this.home = res[1]
           })
           .catch(() => {
@@ -359,6 +371,14 @@ export default {
             this.homeButtonLoading = false
             this.closeSwipe()
             if (!res[1]?.errMsg) return
+            if (this.list?.some(v => v?.address === res[1]?.address)) {
+              uni.showToast({
+                title: '起点和目的地不能相同！',
+                icon: 'none',
+                duration: 1500
+              })
+              return
+            }
             this.home = res[1]
           })
           .catch(() => {
@@ -481,7 +501,8 @@ export default {
         success: (res) => {
           if (res.confirm) {
             this.list = []
-          } else if (res.cancel) {
+            this.storeId = null
+            this.storeName = null
           }
         }
       })
@@ -495,7 +516,9 @@ export default {
         }
       })
     }
-  }
+  },
+  components: { ColorEgg }
+
 }
 </script>
 

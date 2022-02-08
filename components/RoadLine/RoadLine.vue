@@ -59,9 +59,9 @@
         <view v-if="false" class="current-loaction">
           <view class="current-btn">当前位置</view>
         </view>
-        <u-badge :offset="[-8, -8]" type="success" :count="index + 1"></u-badge>
+        <!-- <u-badge :offset="[-8, -8]" type="success" :count="index + 1"></u-badge> -->
         <view>
-          <view class="t-name width-lg text-line-one"
+          <view class="t-name width-lg text-line-one padding-top-xs"
             ><text class="text-primary text-margin-r">{{
               target.length - 1 === index ? "终点站：" : T[index]
             }}</text
@@ -247,12 +247,12 @@ export default {
     box-sizing: border-box;
     background-color: $theme-light-color;
     width: 100%;
-    height: 160rpx;
+    height: 170rpx;
     border: 2rpx solid #e6e6e6;
     margin: 20rpx auto;
-    padding: 0 15rpx;
+    padding: 20rpx;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     border-radius: 20rpx;
     box-shadow: 0px 2px 8px 0px rgba(16, 105, 231, 0.2);
@@ -263,7 +263,7 @@ export default {
       position: absolute;
       left: 0;
       width: 100%;
-      height: 160rpx;
+      height: 170rpx;
       border-radius: 20rpx;
       border: 10rpx solid $theme-warning;
       box-shadow: 0 8rpx 30rpx $theme-warning;
