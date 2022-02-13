@@ -4,7 +4,7 @@
       <view class="option-title">
         <u-icon :name="item.icon" :color="item.color" size="40"></u-icon>
         <view class="text-lg text-margin-l-sm" style="line-height: 45rpx">{{item.title}}</view>
-        <u-badge v-if="item.badge" absolute is-dot type="error" :offset="[-5,-5]"></u-badge>
+        <u-badge v-if="item.badge && !alreadyClick" absolute is-dot type="error" :offset="[-5,-5]"></u-badge>
       </view>
       <u-icon name="arrow-right" color="#ADAAAA" size="45"></u-icon>
     </view>
@@ -16,8 +16,10 @@ import api from '../../util/util'
 export default {
   data () {
     return {
+      alreadyClick: '',
       list: [
         {
+          name: 'collect',
           color: '#32B16C',
           title: '路线收藏',
           icon: 'star-fill',
@@ -25,6 +27,7 @@ export default {
           needAuth: true
         },
         {
+          name: 'document',
           color: '#1F82FF',
           title: '使用说明',
           icon: 'file-text-fill',
@@ -32,6 +35,7 @@ export default {
           badge: true
         },
         {
+          name: 'about',
           color: '#FFB30E',
           title: '关于',
           icon: 'question-circle-fill',
@@ -54,12 +58,19 @@ export default {
       ]
     }
   },
+  onShow () {
+    this.alreadyClick = uni.getStorageSync('already_click')
+  },
   methods: {
     goRoute (item) {
       const { locationAuth } = this.$store.state
       if (item?.needAuth && !locationAuth) {
         api.mpOptionLocation(getApp().getHome)
         return
+      }
+      if (item?.badge) {
+        this.already_click = true
+        uni.setStorageSync('already_click', item.name)
       }
       uni.navigateTo({
         url: item.path

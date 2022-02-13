@@ -245,6 +245,7 @@ export default {
         }
       })
     },
+
     // 通过 改变scale实现：缩放视野以包含所有给定的坐标点, 用以解决uni-app-APP端 include-points无效
     getterScale () {
       const centralPoint = []

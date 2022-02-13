@@ -95,6 +95,40 @@ export default {
       StatusMinute += parseFloat(min) + '分钟'
     }
     return StatusMinute || '627光年'
+  },
+
+  /**
+ * @description 节流
+ * @param fn  传入的回调
+ * @param wait 间隔多少s执行
+ * @immediate 是否立即执行还是
+*/
+  debounce (fn, wait, immediate = true) {
+    let timer = null
+    let res
+    const debounceObj = function () {
+      const _this = this
+      const args = arguments
+      clearTimeout(timer)
+      // 立即执行
+      if (immediate) {
+        const callNow = !timer
+        timer = setTimeout(() => {
+          timer = null
+        }, wait)
+        // 立即执行
+        if (callNow) {
+          res = fn.call(_this, ...args)
+        }
+        // 等待wait 以后才执行
+      } else {
+        timer = setTimeout(() => {
+          fn.call(_this, ...args)
+        }, wait)
+      }
+      return res
+    }
+    return debounceObj
   }
 
 }

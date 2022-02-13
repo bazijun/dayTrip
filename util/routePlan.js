@@ -17,13 +17,13 @@ const qqMap = new QQMapWX({
  4. ui改动， 以及动画
  5. 自动定位起点(√)，初进入获取当前定位loading
 =移除
- 1. ⛔ 取消 新建路线功能
+ 1.  取消 新建路线功能
 =BUG
 
 =优化
     1.贪婪算法，可以强制切换行程方式，强制取消订阅
     2.公交如何距离太近调用计算 相聚位置接口算距离。或者推荐 走路 或 骑行
-    3. ⛔ 驾车路线规划时，有路线相聚小于500米。就关闭公交地铁选择框。
+    3. 驾车路线规划时，有路线相聚小于500米。就关闭公交地铁选择框。
 
 =预计
     1.更详细的地图选点,
@@ -40,33 +40,39 @@ const qqMap = new QQMapWX({
 
 export class RoutePlan {
   constructor (routeLineData) {
+    this.initApp()
     this.home = routeLineData.home
     this.target = routeLineData.target
     this.mode = routeLineData.mode
-    this.targetSequence = [] // 优化后的目标序列
-    this.index = 1
+  }
+
+  initApp () {
     this.frame = 1
-    this.run = true
-    this.event = {}
+    this.index = 1
+    this.run = true // 整个应用的启动状态
+    this.requestAbort = true // 单个请求是否发送结束
+    this.targetSequence = [] // 优化后的目标序列
+  }
+
+  setMode (val) {
+    this.mode = val
   }
 
   unSubscribe () {
-    this.run && qqMap.unRequestDirection()
+    // this.run && qqMap.unRequestDirection()
     this.run = false
   }
 
   // 标准模式 <迪杰斯特拉算法(Dijkstra)> => 递归遍历 运算时间为 简单模式的targets.length倍
   async standardMode (start = this.home, targets = this.target) {
     if (!this.run) {
-      console.log('应用终止💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥')
-      this.frame = 1
-      this.index = 1
-      this.targetSequence = []
+      console.log('💥over💥')
+      // 1.当切换过快时，会出现 执行unSubscribe 引发的initApp()调用后，立即又再执行了 unSubscribe。导致 run 一直为 false,应用卡死。
+      // 2.必须要在路线规划没有计算完成(this.roadMounted = false) && 有某个请求正在请求中时(this.RLD.requestAbort = false) 调用 unSubscribe
+      this.initApp()
       uni.$emit('indexChange', this.frame)
-      // 得刚好进入这里时，清除旧请求。发起新请求。
       return
     }
-    // this.run = true
     console.log(`⭐ 第${this.index}轮； 起点 ➡ ${start.name}`)
     let routeLine = []
     this.index++
@@ -76,32 +82,30 @@ export class RoutePlan {
         from: `${start.latitude},${start.longitude}`,
         to: `${v.latitude},${v.longitude}`
       }
-      const distance = this.distance(path)
-      const { route, duration, polyline, error } = await this.diffDistance(path).catch(() => {})
+      // const distance = this.distance(path)
+      const { route, duration, polyline, error } = await this.diffDistance(path).catch(() => { })
+      this.requestAbort = true
       if (error) {
-        this.targetSequence = []
-        this.index = 1
-        this.frame = 1
+        this.initApp()
+        uni.$emit('indexChange', this.frame)
         return { ...error }
       } else {
-        routeLine = [...routeLine, { ...v, route, duration, polyline }]
+        routeLine = [...routeLine, { ...v, mode: this.mode, route, duration, polyline }]
       }
       this.frame++
       uni.$emit('indexChange', this.frame)
-      console.log(`🚀 ${this.frame}. ${start.name} ➡ ${v.name}: 云距离/耗时 ➡ ${route}m / ${duration}分 ； 本地距离 ➡ ${distance}m`)
+      // console.log(`🚀 ${this.frame}. ${start.name} ➡ ${v.name}: 云距离/耗时 ➡ ${route}m / ${duration}分 ； 本地距离 ➡ ${distance}m`)
     }
     const sortTarget = routeLine.sort((a, b) => a.route - b.route) // 排序后的 target 数组
     const mark = sortTarget[0] // 标记点对象 (以排序成功的第一位目标点)
     const noMark = sortTarget.slice(1) // 未标记点数组 (名次不为一的余下目标点)
     this.targetSequence = [...this.targetSequence, mark]
-    // console.table(sortTarget)
     if (this.targetSequence.length !== this.target.length) {
       return this.standardMode(mark, noMark)
     } else {
       const targetSequence = this.targetSequence
-      this.targetSequence = []
-      this.index = 1
-      this.frame = 1
+      this.initApp()
+      setTimeout(() => uni.$emit('indexChange', this.frame), 0)
       console.log('✅完成✅', targetSequence)
       return targetSequence
     }
@@ -127,6 +131,8 @@ export class RoutePlan {
 
   // 两个位置的距离 (云计算)
   diffDistance (path) {
+    if (!this.requestAbort) return
+    this.requestAbort = false
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         qqMap.direction({

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-// import api from '../../util/util'
+// import { debounce } from 'lodash'
 import { RoutePlan } from '../../util/routePlan'
 import RoadLine from '../../components/RoadLine/RoadLine.vue'
 import RoadLineMap from '../../components/RoadLineMap/RoadLineMap.vue'
@@ -59,6 +59,7 @@ export default {
       home: {},
       target: [],
       frame: 1,
+      timer: null,
       mode: 'driving',
       type: 'distance', // distance | duration
       roadMounted: false,
@@ -105,8 +106,7 @@ export default {
     this.RLD = new RoutePlan({
       home: this.home,
       target: this.target,
-      mode: this.mode,
-      type: this.type
+      mode: this.mode
     })
     uni.$on('indexChange', index => {
       this.frame = index
@@ -115,8 +115,15 @@ export default {
   },
 
   onUnload () {
-    // 实例销毁
+    this.RLD.unSubscribe()
     this.RLD = null
+    this.clearTimer()
+  },
+
+  onHide () {
+    this.RLD.unSubscribe()
+    this.RLD = null
+    this.clearTimer()
   },
 
   computed: {
@@ -135,44 +142,52 @@ export default {
       this.tabsCurrent = index
     },
 
-    modeTabsChange (index) {
-      this.RLD.unSubscribe()
-      const table = ['driving', 'bicycling', 'walking', 'transit']
-      this.modeTabsCurrent = index
-      this.roadMounted = false
-      if (!this.initApp(table[index], this.type)) {
-        setTimeout(async () => {
-          this.RLD.run = true
-          await this.setOrderly(table[index])
-          this.$refs.map.setIncludePoints()
-        }, 2000)
-      }
+    clearTimer () {
+      clearInterval(this.timer)
+      this.timer = null
     },
 
-    async setOrderly (mode, type = this.type) {
-      if (this.initApp(mode, type)) return
+    modeTabsChange (index) {
+      if (this.modeTabsCurrent === index) return
+      const table = ['driving', 'bicycling', 'walking', 'transit']
+      this.modeTabsCurrent = index
+      const cacheStatus = this.initApp(table[index])
+      if (cacheStatus) return
+      // 路线规划没有计算完成 && 有某个请求正在请求中时 强制取消应用订阅
+      if (!this.roadMounted && !this.RLD.requestAbort) this.RLD.unSubscribe()
+      this.roadMounted = false
+      this.timer = setInterval(() => {
+        console.log('轮询.🎀', this.RLD.run)
+        if (this.RLD.run) {
+          this.clearTimer()
+          this.RLD.setMode(table[index])
+          this.setOrderly(table[index])
+          console.log('轮询成功.🔮')
+        }
+      }, 201)
+    },
+
+    async setOrderly (mode) {
       console.time('🕓 总耗时')
       const stand = await this.RLD.standardMode().catch(() => {})
       console.timeEnd('🕓 总耗时')
       if (stand?.status) { // 报错
         this.errorMsg = '路线规划失败：' + stand.message
-        this.routeLineCache[mode][type] = stand
+        this.routeLineCache[mode][this.type] = stand
         this.roadMounted = true
-      } else if (stand?.every(v => v?.id) && stand?.length === this.target.length) {
+      } else if (stand?.every(v => v?.id) && stand?.length === this.target.length) { // 成功
         this.target = stand
-        this.routeLineCache[mode][type] = stand
+        this.routeLineCache[mode][this.type] = stand
         this.roadMounted = true
       }
     },
 
-    initApp (mode, type) { // 应用初始化，并判断是否有缓存
-      this.frame = 1
+    initApp (mode) { // 应用初始化，并判断是否有缓存
+      // this.frame = 1
       this.errorMsg = null
-      this.roadMounted = false
       this.mode = mode
-      this.type = type
-      this.RLD.mode = mode
-      this.RLD.type = type
+      this.clearTimer()
+      const type = this.type
       // 判断是否存在缓存中。缓存中有就不请求了。直接用缓存数据
       if (this.routeLineCache[mode][type]?.length) {
         this.target = this.routeLineCache[mode][type]

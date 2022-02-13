@@ -30,15 +30,15 @@ export default {
       colorEggList: [
         {
           key: '红玫瑰',
-          title: '成就解锁',
+          title: 'bingo！',
           msg: '为了传达这首歌，我们不停歌唱',
           body: '/static/colorEgg/red-rose.jpg'
         },
         {
           key: 'psy',
-          title: '祝你快乐！',
-          msg: '典藏，启动，启动，启动。典藏，启动，启对方的动，启动。',
-          body: '/static/icon/road-click.png'
+          title: 'bingo！',
+          msg: '(ฅ´ω`ฅ)',
+          body: '/static/colorEgg/love.jpg'
         }
       ]
     }
@@ -62,10 +62,11 @@ export default {
   background-color: #F6F7F9;
   margin: 20rpx auto;
   padding: 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   image{
-    width: 100%;
-    height: 100%;
-    margin: auto;
+    width: 350rpx;
   }
 }
 .msg-box {

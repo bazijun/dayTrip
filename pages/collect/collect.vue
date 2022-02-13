@@ -58,6 +58,7 @@ export default {
         this.$store.commit('DELETE_ROUTE_STORE', index)
       }
     },
+
     open (id) {
       const index = this.routeStore.findIndex((v) => v.id === id)
       // 先将正在被操作的swipeAction标记为打开状态，否则由于props的特性限制，
