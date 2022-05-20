@@ -16,6 +16,7 @@
 </template>
 
 <script>
+// TODO: 收藏可重命名
 export default {
   data () {
     return {
@@ -24,6 +25,12 @@ export default {
           text: '删除',
           style: {
             backgroundColor: '#F56C6C'
+          }
+        },
+        {
+          text: '重命名',
+          style: {
+            backgroundColor: '#1F82FF'
           }
         }
       ]
@@ -46,8 +53,9 @@ export default {
     },
 
     swipeClick (id) {
+      const importantId = 1632488015398
       const index = this.routeStore.findIndex(v => v.id === id)
-      if (this.routeStore[index].id === 1632488015398) {
+      if (this.routeStore[index].id === importantId) {
         uni.showToast({
           title: '这个不能删！ﾍ(;´Д｀ﾍ) ',
           icon: 'none',

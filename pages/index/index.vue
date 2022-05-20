@@ -218,6 +218,12 @@ export default {
     })
     this.getList()
   },
+
+  // TODO: 从收藏中 传递而来的路线信息，只有第一次 会提醒 “路线收藏的数据，若有修改会自动保”
+  onShow () {
+    this.resetPage()
+  },
+
   methods: {
     newRoute () {
       uni.showModal({
@@ -493,6 +499,12 @@ export default {
         })
     },
 
+    resetPage () {
+      this.list = []
+      this.storeId = null
+      this.storeName = null
+    },
+
     reloadTargetList () {
       if (this.list.length === 0) return
       uni.showModal({
@@ -500,9 +512,7 @@ export default {
         content: '是否确定重置目标列表 ？',
         success: (res) => {
           if (res.confirm) {
-            this.list = []
-            this.storeId = null
-            this.storeName = null
+            this.resetPage()
           }
         }
       })

@@ -83,7 +83,7 @@ export class RoutePlan {
         to: `${v.latitude},${v.longitude}`
       }
       // const distance = this.distance(path)
-      const { route, duration, polyline, error } = await this.diffDistance(path).catch(() => { })
+      const { route, duration, polyline, error } = await this.diffDistance(path).catch(() => {})
       this.requestAbort = true
       if (error) {
         this.initApp()
