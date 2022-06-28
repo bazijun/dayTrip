@@ -1,5 +1,52 @@
 export const markdown = `
-<div style="padding: 20px">
-<span><div><div><font style="font-size: 16pt;">😎<i>看这里&nbsp;</i>：</font></div><div style="padding: 0.1rem 1.5rem; border-left: 0.5rem solid rgb(66, 185, 131); margin: 1rem 0px; background-color: rgb(243, 245, 247); border-top-color: rgb(66, 185, 131); border-right-color: rgb(66, 185, 131); border-bottom-color: rgb(66, 185, 131); letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;"><div style="font-size: 16px; margin-bottom: -0.4rem;"><br></div><div style="box-sizing: border-box; outline: 0px; margin: 0px 0px 16px; padding: 0px; overflow-wrap: break-word;"><span style="box-sizing: border-box; outline: 0px; overflow-wrap: break-word; font-weight: bold;"><font style="font-size: 12pt;">在使用该应用时，你可能需要知道的是:</font></span></div><div style="font-size: 16px; box-sizing: border-box; outline: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 16px; padding: 0px; overflow-wrap: break-word;"><span style="box-sizing: border-box; outline: 0px; font-size: 11pt; overflow-wrap: break-word;">👉不推荐目标地之间距离太近，至少应当大于</span><span style="box-sizing: border-box; outline: 0px; font-size: 11pt; overflow-wrap: break-word; font-weight: bold; text-decoration: underline;"><font style="color: rgb(62, 175, 124);">100米</font></span></div><div style="font-size: 16px; box-sizing: border-box; outline: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 16px; padding: 0px; overflow-wrap: break-word;"><span style="box-sizing: border-box; outline: 0px; font-size: 11pt; overflow-wrap: break-word;">👉路线距离太近，</span><span style="box-sizing: border-box; outline: 0px; font-size: 11pt; overflow-wrap: break-word; font-weight: bold; text-decoration: underline;">公交</span><span style="box-sizing: border-box; outline: 0px; font-size: 11pt; overflow-wrap: break-word;">&nbsp;路线规划可能失败。</span></div><div style="font-size: 16px; box-sizing: border-box; outline: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 16px; padding: 0px; overflow-wrap: break-word;"><span style="box-sizing: border-box; outline: 0px; font-size: 16px; overflow-wrap: break-word; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(238, 240, 244); color: rgb(0, 0, 0); font-family: 微软雅黑; font-variant-caps: normal; font-variant-ligatures: normal;">👉&nbsp;</span><span style="box-sizing: border-box; outline: 0px; font-size: 11pt; overflow-wrap: break-word;">路线距离太远，</span><span style="box-sizing: border-box; outline: 0px; font-size: 11pt; overflow-wrap: break-word; font-weight: bold; text-decoration: underline;">步行</span><span style="box-sizing: border-box; outline: 0px; font-size: 11pt; overflow-wrap: break-word;">&nbsp;路线规划可能失败。</span></div><div style="font-size: 16px; margin-bottom: -0.4rem;"><span style="font-size:16px;"><span style="box-sizing: border-box; outline: 0px; font-size: 16px; overflow-wrap: break-word;">👌&nbsp;当路线规划失败时，请不用担心，使用其他任意规划成功的路线结果，依旧可以满足您的出行需求。因为，</span><span style="box-sizing: border-box; outline: 0px; font-size: 16px; overflow-wrap: break-word; font-weight: bold;"><font style="color: rgb(62, 175, 124);"><u>无论何种出行方式，计算出的不同地点的出行顺序几乎都是一样的。</u></font></span></span><font color="#3EAF7C"><br></font></div><div style="font-size: 16px; margin-bottom: -0.4rem;"><span style="font-size:16px;"><span style="box-sizing: border-box; outline: 0px; font-size: 16px; overflow-wrap: break-word; font-weight: bold;"><font style="color: rgb(62, 175, 124);"><u><br></u></font></span></span></div><div style="font-size: 16px; margin-bottom: -0.4rem;"></div></div><div><br></div><blockquote style="box-sizing: border-box; outline: 0px; padding: 16px 16px 0px; margin: 0px 0px 24px; border-left: 8px solid rgb(221, 223, 228); background: rgb(238, 240, 244); overflow: auto; overflow-wrap: break-word; word-break: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;"><div style="margin-bottom: -0.4rem;"><span style="box-sizing: border-box; outline: 0px; overflow-wrap: break-word;"><font style="font-size: 12pt;"><b><font style="color: rgb(227, 0, 0);">注意！</font></b></font></span></div><div style="font-size: 16px; margin-bottom: -0.4rem;"><br></div><div style="font-size: 16px; box-sizing: border-box; outline: 0px; margin: 0px 0px 16px; padding: 0px; overflow-wrap: break-word;"><span style="font-size:16px;"><span style="font-size: 16px; box-sizing: border-box; outline: 0px; overflow-wrap: break-word;">请不要过于依赖<b>【路线收藏】</b>，因为路线数据都是放在您手机本地缓存，一旦删除小程序或者清理微信缓存，都会导致&nbsp;</span><span style="font-size: 16px; box-sizing: border-box; outline: 0px; overflow-wrap: break-word;"><b>【路线收藏】</b>里的数据丢失。(因为该应用现在还没有服务器，但没准未来会有😜)</span></span></div></blockquote><div><font style="font-size: 16pt;"><br></font></div><div><font style="font-size: 16pt;"><hr/><i>下面是版本说明&nbsp;</i>：</font></div><div><span style="font-size: 12pt;"><br></span></div><div><b style="font-family: unset; font-size: 30pt;">v2.0</b><b style="font-family: unset;"><font style="font-size: 12pt;">&nbsp;传奇典藏版</font></b><br></div><div><b><font style="font-size: 8pt;"><br></font></b></div><div><b><font style="font-size: 16pt;">📢&nbsp;新功能</font></b></div><div style="box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.15);-en-codeblock:true;"><div><font face="微软雅黑"style="font-size: 11pt;">1.加入路线地图!😋</font></div><div><font face="微软雅黑"style="font-size: 11pt;">2.路线导航升级为腾讯地图的单点路线规划!😝</font></div><div><font style="font-size: 11pt;"><font face="微软雅黑">3.现在可以看到路线之间的距离，耗时以及总里程啦!&nbsp;</font>😁</font></div></div><div><font style="font-size: 11pt;"><br></font></div><div><span style="font-weight: bold; font-size: 16pt;">🔧&nbsp;优化</span></div><div style="box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.15);-en-codeblock:true;"><div><font face="微软雅黑"style="font-size: 11pt;">1.页面视图进行了整体性调整，部分视图加入动画，更加丝滑了~</font></div><div><font face="微软雅黑"style="font-size: 11pt;">2.优化了算法，更快啦！用户操作更自由啦！</font></div><div><font face="微软雅黑"style="font-size: 11pt;"><span style="color: rgb(51, 51, 51);">3.&nbsp;</span>自动定位起点以及更完善的用户引导，使用更轻便！</font></div></div><div><font style="font-size: 11pt;"><br></font></div><div><span style="font-weight: bold;"><font style="font-size: 16pt;">💖&nbsp;感谢</font></span></div><div style="box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.15);-en-codeblock:true;"><div><font face="微软雅黑"style="font-size: 11pt;">衷心感谢【网中人】大哥的鼓励与支持！😊</font></div></div><div><span style="box-sizing: border-box; letter-spacing: 0.035rem; font-size: 1.953rem; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;"><br></span></div></div></span>
-</div>
+#### 在使用该应用时，你可能需要知道的是:
+
+👉 不推荐 目标地之间距离太近，至少因当大于100米
+👉 路线距离太近，公交 路线规划可能失败。
+👉 路线距离太远，步行 路线规划可能失败。
+👌  当路线规划失败时，请不用担心，使用其他任意规划成功的路线结果，依旧可以满足您的出行需求。因为，无论何种出行方式，计算出的不同地点的出行顺序几乎都是一样的。
+
+
+
+请不要过于依赖 【路线收藏】，因为路线数据都是放在您手机本地缓存，一旦删除小程序或者清理微信缓存，都会导致 【路线收藏】里的数据丢失。(因为该应用现在还没有服务器，但没准未来会有😜)
+
+------
+
+### v2.1
+
+
+
+📢 **新功能**
+
+- 路线收藏改为右滑编辑，点击直接浏览路线规划结果！😋
+
+
+
+### v2.0 传奇典藏版
+
+
+
+📢 **新功能**
+
+- 加入路线地图! 😋
+- 路线导航升级为腾讯地图的单点路线规划! 😝
+- 现在可以看到路线之间的距离，耗时以及总里程啦! 😁
+
+
+
+🔧 **优化**
+
+- 页面视图进行了整体性调整，部分视图加入动画，更加丝滑了~
+- 优化了算法，更快啦！用户操作更自由啦！
+- 自动定位起点以及更完善的用户引导，使用更轻便！
+
+
+
+------
+
+#### 💖 感谢
+
+
+
+衷心感谢 【网中人】大哥的鼓励与支持！😊
 `

@@ -1,7 +1,7 @@
 <template>
   <div class="about-box">
         <image class="theme-img" src="/static/logo.png" />
-        <div>多路优选<span class="edition">v2.0</span></div>
+        <div>多路优选<span class="edition">v2.1</span></div>
         <div class="theme-color">—— 一款单日多目的地， 行程规划APP ——</div>
         <div class="warn-box">
           <!-- 不免责声明: 不精准我全责。<br/> -->
