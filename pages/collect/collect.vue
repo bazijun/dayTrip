@@ -1,17 +1,29 @@
 <template>
   <view>
-    <view style="margin: 20rpx" v-for="item in routeStore" :key="item.id" >
-      <u-swipe-action :show="item.show" :index="item.id" btn-width="120" @click="swipeClick" @open="open" :options="options">
-        <view class="option-list" @click="goRoute(item)">
+    <view style="margin: 20rpx" v-for="item in routeStore" :key="item.id">
+      <u-swipe-action
+        :show="item.show"
+        :index="item.id"
+        btn-width="120"
+        @click="swipeClick"
+        @open="open"
+        :options="options"
+      >
+        <view class="option-list" @click="openCollect(item)">
           <view class="option-title">
-            <u-icon name="star-fill" :color="item.id === 1632488015398 ? '#FF960E' : '#2881FF'" size="40"></u-icon>
-            <view class="text-lg text-margin-l-sm" style="line-height: 45rpx">{{item.name}}</view>
+            <u-icon
+              name="star-fill"
+              :color="item.id === 1632488015398 ? '#FF960E' : '#2881FF'"
+              size="40"
+            ></u-icon>
+            <view class="text-lg text-margin-l-sm" style="line-height: 45rpx">{{
+              item.name
+            }}</view>
           </view>
           <u-icon name="arrow-left-double" color="#ADAAAA" size="45"></u-icon>
         </view>
       </u-swipe-action>
     </view>
-
   </view>
 </template>
 
@@ -22,15 +34,15 @@ export default {
     return {
       options: [
         {
-          text: '删除',
+          text: '编辑',
           style: {
-            backgroundColor: '#F56C6C'
+            backgroundColor: '#1F82FF'
           }
         },
         {
-          text: '重命名',
+          text: '删除',
           style: {
-            backgroundColor: '#1F82FF'
+            backgroundColor: '#F56C6C'
           }
         }
       ]
@@ -45,6 +57,19 @@ export default {
     this.$store.commit('LOAD_ROUTE_STORE')
   },
   methods: {
+    openCollect (item) {
+      console.log('[item]===>🚀', item)
+      const payload = {
+        id: item.id,
+        home: item.home,
+        target: item.target
+      }
+      const list = JSON.stringify(payload)
+      uni.navigateTo({
+        url: `../routePage/routePage?list=${encodeURIComponent(list)}`
+      })
+    },
+
     goRoute (item) {
       this.$store.commit('SET_CURRENT_ROUTE', item)
       uni.reLaunch({
@@ -52,18 +77,26 @@ export default {
       })
     },
 
-    swipeClick (id) {
+    swipeClick (id, idx) {
       const importantId = 1632488015398
-      const index = this.routeStore.findIndex(v => v.id === id)
-      if (this.routeStore[index].id === importantId) {
-        uni.showToast({
-          title: '这个不能删！ﾍ(;´Д｀ﾍ) ',
-          icon: 'none',
-          duration: 1500
-        })
-        this.routeStore[index].show = false
-      } else {
-        this.$store.commit('DELETE_ROUTE_STORE', index)
+      const index = this.routeStore.findIndex((v) => v.id === id)
+      const item = this.routeStore.find((f) => f.id === id)
+      // 编辑
+      if (idx === 0) {
+        console.log('[item]===>🚀', item)
+        this.goRoute(item)
+        // 删除
+      } else if (idx === 1) {
+        if (this.routeStore[index].id === importantId) {
+          uni.showToast({
+            title: '这个不能删！ﾍ(;´Д｀ﾍ) ',
+            icon: 'none',
+            duration: 1500
+          })
+          this.routeStore[index].show = false
+        } else {
+          this.$store.commit('DELETE_ROUTE_STORE', index)
+        }
       }
     },
 

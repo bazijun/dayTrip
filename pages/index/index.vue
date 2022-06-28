@@ -220,9 +220,9 @@ export default {
   },
 
   // TODO: 从收藏中 传递而来的路线信息，只有第一次 会提醒 “路线收藏的数据，若有修改会自动保”
-  onShow () {
-    this.resetPage()
-  },
+  // onShow () {
+  // this.resetPage()
+  // },
 
   methods: {
     newRoute () {
@@ -329,7 +329,13 @@ export default {
         name: this.storeName,
         show: false,
         home: this.home,
-        target: this.list
+        target: this.list,
+        cache: {
+          driving: [],
+          bicycling: [],
+          walking: [],
+          transit: []
+        }
       }
       this.$store.commit('ADD_ROUTE_STORE', payload)
       const list = JSON.stringify(payload)

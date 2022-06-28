@@ -30,11 +30,12 @@ const store = new Vuex.Store({
     },
     UPDATE_ROUTE_STORE (state, payload) {
       const Store = uni.getStorageSync('store')
-      const { id, home, target } = payload
+      const { id, home, target, cache } = payload
       if (Store.length) state.routeStore = Store
       const index = state.routeStore.findIndex(v => v.id === id)
       state.routeStore[index].home = home
       state.routeStore[index].target = target
+      state.routeStore[index].cache = cache
       uni.setStorageSync('store', state.routeStore)
     },
     DELETE_ROUTE_STORE (state, index) {

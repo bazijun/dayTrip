@@ -60,12 +60,6 @@
         "text": "路线"
     },
 		{
-			"pagePath": "pages/index/index",
-			"iconPath": "static/icon/home.png",
-			"selectedIconPath": "static/icon/home.png",
-			"text": "启动"
-	},
-		{
         "pagePath": "pages/option/option",
         "iconPath": "static/icon/option.png",
         "selectedIconPath": "static/icon/option-click.png",

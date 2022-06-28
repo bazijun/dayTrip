@@ -57,8 +57,15 @@ export const routeStore = [
         show: false,
         id: 1632486510972
       }
-    ]
+    ],
+    cache: {
+      driving: [],
+      bicycling: [],
+      walking: [],
+      transit: []
+    }
   }
+
   // {
   //   id: 1632488015398,
   //   name: '永恒与一日',

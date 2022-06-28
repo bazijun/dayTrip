@@ -58,10 +58,11 @@ export default {
     return {
       home: {},
       target: [],
+      currentId: 0,
       frame: 1,
       timer: null,
       mode: 'driving',
-      type: 'distance', // distance | duration
+      // type: 'distance', // distance | duration
       roadMounted: false,
       errorMsg: null,
       tabsList: ['地图', '路线列表'],
@@ -73,25 +74,25 @@ export default {
       ],
       tabsCurrent: 0,
       modeTabsCurrent: 0,
-      routeLineCache: {
-        // 路线的缓存
-        driving: {
-          distance: [],
-          duration: []
-        },
-        bicycling: {
-          distance: [],
-          duration: []
-        },
-        walking: {
-          distance: [],
-          duration: []
-        },
-        transit: {
-          distance: [],
-          duration: []
-        }
-      },
+      // routeLineCache: {
+      //   // 路线的缓存
+      //   driving: {
+      //     distance: [],
+      //     duration: []
+      //   },
+      //   bicycling: {
+      //     distance: [],
+      //     duration: []
+      //   },
+      //   walking: {
+      //     distance: [],
+      //     duration: []
+      //   },
+      //   transit: {
+      //     distance: [],
+      //     duration: []
+      //   }
+      // },
       RLD: null // RoutePlan类的实例
     }
   },
@@ -100,7 +101,8 @@ export default {
     // const test = uni.getStorageSync('store')
     // this.target = test[0]?.target
     // this.home = test[0]?.home
-    const { home, target } = JSON.parse(decodeURIComponent(option.list))
+    const { id, home, target } = JSON.parse(decodeURIComponent(option.list))
+    this.currentId = id
     this.home = home
     this.target = target
     this.RLD = new RoutePlan({
@@ -168,16 +170,26 @@ export default {
     },
 
     async setOrderly (mode) {
+      const cacheStatus = this.initApp(mode)
+      if (cacheStatus) return
       console.time('🕓 总耗时')
+      const routeStore = uni.getStorageSync('store')
+      const currentRouteInstance = routeStore.find(f => f.id === this.currentId)
       const stand = await this.RLD.standardMode().catch(() => {})
       console.timeEnd('🕓 总耗时')
       if (stand?.status) { // 报错
         this.errorMsg = '路线规划失败：' + stand.message
-        this.routeLineCache[mode][this.type] = stand
+        currentRouteInstance.cache[mode] = { errorMsg: this.errorMsg }
+        this.$store.commit('UPDATE_ROUTE_STORE', currentRouteInstance)
+        // this.routeLineCache[mode][this.type] = stand
         this.roadMounted = true
       } else if (stand?.every(v => v?.id) && stand?.length === this.target.length) { // 成功
+        // const routeSequence = stand?.map(m => m.id)
+        currentRouteInstance.cache[mode] = stand
+        this.$store.commit('UPDATE_ROUTE_STORE', currentRouteInstance)
+        console.log('[stand]===>🚀', stand)
         this.target = stand
-        this.routeLineCache[mode][this.type] = stand
+        // this.routeLineCache[mode][this.type] = stand
         this.roadMounted = true
       }
     },
@@ -187,14 +199,16 @@ export default {
       this.errorMsg = null
       this.mode = mode
       this.clearTimer()
-      const type = this.type
-      // 判断是否存在缓存中。缓存中有就不请求了。直接用缓存数据
-      if (this.routeLineCache[mode][type]?.length) {
-        this.target = this.routeLineCache[mode][type]
+      const routeStore = uni.getStorageSync('store')
+      const { cache: currentRouteInstanceCache } = routeStore.find(f => f.id === this.currentId)
+      // 判断是否存在缓存中。缓存中有就不请求了。直接用缓存的排序序列计算
+      if (Array.isArray(currentRouteInstanceCache?.[mode]) && currentRouteInstanceCache?.[mode]?.length) {
+        // this.target = routeSequence.map(m => currentRouteInstanceTarget.find(f => f.id === m))
+        this.target = currentRouteInstanceCache[mode]
         this.roadMounted = true
         return true
-      } else if (this.routeLineCache[mode][type]?.status) { // 错误信息的缓存
-        this.errorMsg = this.routeLineCache[mode][type]?.message
+      } else if (currentRouteInstanceCache?.[mode]?.errorMsg) { // 错误信息的缓存
+        this.errorMsg = currentRouteInstanceCache[mode]?.errorMsg
         this.roadMounted = true
         return true
       } else {
