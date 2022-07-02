@@ -144,6 +144,7 @@ export class RoutePlan {
             // 解压路线
             const polyline = []
             // 公交路线分段式；
+            console.log('[res.result]===>🚀', res.result)
             if (path.mode === 'transit') {
               const ret = res.result?.routes[0]
               const count = ret.steps?.length

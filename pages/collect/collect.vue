@@ -28,7 +28,6 @@
 </template>
 
 <script>
-// TODO: 收藏可重命名
 export default {
   data () {
     return {

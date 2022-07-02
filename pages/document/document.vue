@@ -13,10 +13,10 @@ export default {
     }
   },
   components: { towxml },
-  onshow () {
-    console.log('[why??]===>🚀')
+  mounted () {
     this.document = towxmlInstance(markdown, 'markdown')
-    console.log('[document]===>🚀', this.document)
+  },
+  onshow () {
   }
 }
 </script>

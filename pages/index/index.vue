@@ -137,6 +137,8 @@
   > bug列表
   1. uni.chooseLocation 地址切换，如果附近有距离相同的位置，默认选择的地址会匹配不准确
 ******/
+
+// TODO: 小程序被切到后台，路线规划请求会中断
 import api from '../../util/util'
 import ColorEgg from '../../components/ColorEgg/ColorEgg'
 export default {
@@ -218,11 +220,6 @@ export default {
     })
     this.getList()
   },
-
-  // TODO: 从收藏中 传递而来的路线信息，只有第一次 会提醒 “路线收藏的数据，若有修改会自动保”
-  // onShow () {
-  // this.resetPage()
-  // },
 
   methods: {
     newRoute () {
