@@ -13,7 +13,7 @@
           <view class="option-title">
             <u-icon
               name="star-fill"
-              :color="item.id === 1632488015398 ? '#FF960E' : '#2881FF'"
+              :color="item.id === zCollect.key ? zCollect.color : item.name === pCollect.key ? pCollect.color : '#2881FF'"
               size="40"
             ></u-icon>
             <view class="text-lg text-margin-l-sm" style="line-height: 45rpx">{{
@@ -31,6 +31,14 @@
 export default {
   data () {
     return {
+      zCollect: {
+        key: 1632488015398,
+        color: '#FF960E'
+      },
+      pCollect: {
+        key: 'psy',
+        color: '#FE7DA4'
+      },
       options: [
         {
           text: '编辑',
